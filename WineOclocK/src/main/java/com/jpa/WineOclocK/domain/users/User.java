@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.util.Assert;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,16 +20,21 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userId; //내부 사용자 수 체크용
 
-    private String userEmail; //사용자 로그인 아이디
-    private String userPw; //사용자 패스워드
-    private String userName; //사용할 닉네임
+    private String email; //사용자 로그인 아이디
+    private String password; //사용자 패스워드
+    private String username; //사용할 닉네임
     private String birthday; //해당 생일에 달에 생일 와인 추천
 
     @Builder
-    public User(String email, String pw, String username, String birthday) {
-        this.userEmail = email;
-        this.userPw = pw;
-        this.userName = username;
+    public User(String email, String password, String username, String birthday) {
+
+        Assert.hasText(username, "username is Not null");
+        Assert.hasText(password, "password is Not null");
+        Assert.hasText(email, "email is Not null");
+
+        this.email = email;
+        this.password = password;
+        this.username = username;
         this.birthday = birthday;
     }
 }

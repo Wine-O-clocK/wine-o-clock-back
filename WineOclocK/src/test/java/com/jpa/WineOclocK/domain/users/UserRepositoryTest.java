@@ -28,13 +28,13 @@ public class UserRepositoryTest {
     public void user_data_insert(){
         //given
         String email = "song@sookmyung.ac.kr";
-        String pw = "password1234";
+        String password = "password1234";
         String username = "눈송";
         String birthday = "991002";
 
         userRepository.save(User.builder()
                 .email(email)
-                .pw(pw)
+                .password(password)
                 .username(username)
                 .birthday(birthday)
                 .build());
@@ -43,7 +43,7 @@ public class UserRepositoryTest {
 
         //then
         User user = userList.get(0);
-        Assertions.assertThat(user.getUserEmail()).isEqualTo(email);
+        Assertions.assertThat(user.getEmail()).isEqualTo(email);
     }
 
 }
