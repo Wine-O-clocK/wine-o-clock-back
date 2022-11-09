@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Getter
@@ -13,7 +15,8 @@ import javax.persistence.Id;
 public class Wine {
 
     @Id
-    private Integer wineId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long wineId;
 
     private String wineName;
     private String wineImg;
@@ -22,7 +25,7 @@ public class Wine {
 
     private int wineSweet; //와인 당도감 (1~5)
     private int wineBody; //와인 바디감 (1~5)
-    private String wineVar; //와인 품종
+    private String wineVariety; //와인 품종
     private int winePrice; //와인 가격
     private String wineAroma1;
     private String wineAroma2;
@@ -30,7 +33,7 @@ public class Wine {
 
     @Builder
     public Wine(String wineName, String wineImg, String wineNameEng, String wineType,
-                int wineSweet, int wineBody, String wineVar, int winePrice,
+                int wineSweet, int wineBody, String wineVariety, int winePrice,
                 String wineAroma1, String wineAroma2, String wineAroma3) {
 
         this.wineName = wineName;
@@ -39,7 +42,7 @@ public class Wine {
         this.wineType = wineType;
         this.wineSweet = wineSweet;
         this.wineBody = wineBody;
-        this.wineVar = wineVar;
+        this.wineVariety = wineVariety;
         this.winePrice = winePrice;
         this.wineAroma1 = wineAroma1;
         this.wineAroma2 = wineAroma2;

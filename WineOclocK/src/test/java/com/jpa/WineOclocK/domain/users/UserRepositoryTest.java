@@ -1,16 +1,19 @@
 package com.jpa.WineOclocK.domain.users;
 
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class) //SpringRunner 라는 스프링 실행자를 사용. (스프링부트테스트 - JUnit 사이 연결자)
+import java.util.List;
+
 //@WebMvcTest   // web API 를 테스트 할 때 사용
-@SpringBootTest
+
+@RunWith(SpringRunner.class) //SpringRunner 라는 스프링 실행자를 사용. (스프링부트테스트 - JUnit 사이 연결자)
+@SpringBootTest // H2 database 를 자동으로 실행
 public class UserRepositoryTest {
 
     @Autowired
@@ -31,10 +34,16 @@ public class UserRepositoryTest {
 
         userRepository.save(User.builder()
                 .email(email)
-                .);
+                .pw(pw)
+                .username(username)
+                .birthday(birthday)
+                .build());
         //when
+        List<User> userList = userRepository.findAll();
 
         //then
+        User user = userList.get(0);
+        Assertions.assertThat(user.getUserEmail()).isEqualTo(email);
     }
 
 }
