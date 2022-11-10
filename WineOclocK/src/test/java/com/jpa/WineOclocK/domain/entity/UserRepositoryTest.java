@@ -1,5 +1,6 @@
-package com.jpa.WineOclocK.domain.users;
+package com.jpa.WineOclocK.domain.entity;
 
+import com.jpa.WineOclocK.domain.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Test;

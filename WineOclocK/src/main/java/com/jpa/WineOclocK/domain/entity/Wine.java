@@ -1,4 +1,4 @@
-package com.jpa.WineOclocK.domain.wines;
+package com.jpa.WineOclocK.domain.entity;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -28,8 +28,8 @@ public class Wine {
     private String wineVariety; //와인 품종
     private int winePrice; //와인 가격
     private String wineAroma1;
-    private String wineAroma2;
-    private String wineAroma3;
+    private String wineAroma2; //null 가능
+    private String wineAroma3; //null 가능
 
     @Builder
     public Wine(String wineName, String wineImg, String wineNameEng, String wineType,
