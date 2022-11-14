@@ -41,6 +41,21 @@ public class User {
     @Column(length = 10)
     private String userLikeAroma3;
 
+    @Column
+    private String picture;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
+    @Builder
+    public User(String name, String email, String picture, Role role) {
+        this.username = name;
+        this.email = email;
+        this.picture = picture;
+        this.role = role;
+    }
+
     @Builder
     public User(String email, String password, String username, String birthday,
                 String userLikeType, int userLikeSweet, int userLikeBody,
@@ -57,4 +72,16 @@ public class User {
         this.userLikeAroma2 = userLikeAroma2;
         this.userLikeAroma3 = userLikeAroma3;
     }
+
+    public String getRoleKey() {
+        return this.role.getKey();
+    }
+
+    public User update(String name, String picture) {
+        this.username = name;
+        this.picture = picture;
+
+        return this;
+    }
+
 }
