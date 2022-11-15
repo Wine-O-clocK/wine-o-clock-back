@@ -5,6 +5,7 @@ import com.jpa.WineOclocK.config.auth.dto.OAuthAttributes;
 import com.jpa.WineOclocK.config.auth.dto.SessionUser;
 import com.jpa.WineOclocK.domain.entity.User;
 import com.jpa.WineOclocK.domain.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -18,36 +19,39 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpSession;
 import java.util.Collections;
 
-//위에서 oauth2Login이 성공한 이후 과정은 customOAuth2UserService에서 진행
+//위에서 oauth2Login 이 성공한 이후 과정은 customOAuth2UserService 에서 진행
+//OAuthAttributes 를 기반으로 가입 및 정보수정, 세션 저장 등 기능 수행
 @Service
+@RequiredArgsConstructor
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
-    private UserRepository userRepository;
-    private HttpSession httpSession;
+    private final UserRepository userRepository;
+    private final HttpSession httpSession;
 
-    @SneakyThrows
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2UserService delegate = new DefaultOAuth2UserService();
+
+        OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
 
         //현재 로그인 진행 중인 서비스를 구분하는 코드
-        //네이버 로그인인지, 구글 로그인인지 구분하기 위해 사용합
+        //네이버 로그인인지, 구글 로그인인지 구분하기 위해 사용
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
-        //OAuth2 로그인 진행 시 키가 되는 필드값을 이야기합니다. Primary Key와 같은 의미입니다.
+        //OAuth2 로그인 진행 시 키가 되는 필드값을 이야기합니다. Primary Key 와 같은 의미입니다.
         //구글의 경우 기본적으로 코드를 지원하지만, 네이버 카카오 등은 기본 지원하지 않습니다. 구글의 기본 코드는 "sub"입니다.
+        // oauth2 로그인 진행 시 키가 되는 필드 값
         String userNameAttributeName = userRequest.getClientRegistration()
-                .getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
+                .getProviderDetails()
+                .getUserInfoEndpoint()
+                .getUserNameAttributeName();
 
-        OAuthAttributes attributes = OAuthAttributes.
-                of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
+        // OAuthAttributes: attribute 를 담을 클래스 (개발자가 생성
+        OAuthAttributes attributes = OAuthAttributes
+                .of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
         User user = saveOrUpdate(attributes);
+        //SessionUser: 세션에 사용자 정보를 저장하기 위한 DTO 클래스 (개발자가 생성)
         httpSession.setAttribute("user", new SessionUser(user));
-
-        //objectMapper 를 이용해서 json 형식으로 출력해 보기 위해서 아래와 같이 구현합니다.
-        System.out.println(new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(userRequest));
-        System.out.println(new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(oAuth2User));
 
         return new DefaultOAuth2User(
 //                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),

@@ -25,16 +25,16 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/**","/oauth-login").permitAll() // login URL에는 누구나 접근 가능하게 합니다.
+                .antMatchers("/**","/oauth-login").permitAll() // login URL 에는 누구나 접근 가능하게 합니다.
                 .antMatchers("/특정_URL").hasRole("특정_ROLE")
                 .anyRequest().authenticated() // 그 이외에는 인증된 사용자만 접근 가능하게 합니다.
                 .and()
-                .logout()
-                .logoutSuccessUrl("/")
+                    .logout()
+                    .logoutSuccessUrl("/")
                 .and()
-                .oauth2Login() // oauth2Login 설정 시작
-                .userInfoEndpoint() // oauth2Login 성공 이후의 설정을 시작
-                .userService(customOAuth2UserService);
+                    .oauth2Login() // oauth2Login 설정 시작
+                    .userInfoEndpoint() // oauth2Login 성공 이후의 설정을 시작
+                    .userService(customOAuth2UserService);
 
         return http.build();
     }
