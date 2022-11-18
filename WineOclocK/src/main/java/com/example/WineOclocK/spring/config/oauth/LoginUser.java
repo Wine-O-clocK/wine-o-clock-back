@@ -1,4 +1,4 @@
-package com.example.WineOclocK.spring.config.auth;
+package com.example.WineOclocK.spring.config.oauth;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

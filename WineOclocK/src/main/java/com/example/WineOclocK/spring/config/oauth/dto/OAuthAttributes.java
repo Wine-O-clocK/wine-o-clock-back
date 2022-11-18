@@ -1,7 +1,7 @@
-package com.example.WineOclocK.spring.config.auth.dto;
+package com.example.WineOclocK.spring.config.oauth.dto;
 
 import com.example.WineOclocK.spring.domain.entity.Role;
-import com.example.WineOclocK.spring.domain.entity.User;
+import com.example.WineOclocK.spring.domain.entity.SocialUser;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -60,8 +60,8 @@ public class OAuthAttributes {
                 .build();
     }
 
-    public User toEntity() {
-        return User.builder()
+    public SocialUser toEntity() {
+        return SocialUser.builder()
                 .name(name)
                 .email(email)
                 .picture(picture)

@@ -1,6 +1,6 @@
-package com.example.WineOclocK.spring.config.auth;
+package com.example.WineOclocK.spring.config.oauth;
 
-import com.example.WineOclocK.spring.config.auth.dto.SessionUser;
+import com.example.WineOclocK.spring.config.oauth.dto.SessionUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;

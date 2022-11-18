@@ -1,9 +1,10 @@
-package com.example.WineOclocK.spring.config.auth;
+package com.example.WineOclocK.spring.config.oauth;
 
-import com.example.WineOclocK.spring.config.auth.dto.OAuthAttributes;
-import com.example.WineOclocK.spring.config.auth.dto.SessionUser;
-import com.example.WineOclocK.spring.domain.entity.User;
-import com.example.WineOclocK.spring.domain.repository.UserRepository;
+import com.example.WineOclocK.spring.config.oauth.dto.OAuthAttributes;
+import com.example.WineOclocK.spring.config.oauth.dto.SessionUser;
+import com.example.WineOclocK.spring.domain.entity.SocialUser;
+import com.example.WineOclocK.spring.domain.repository.SocialUserRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -22,7 +23,7 @@ import java.util.Collections;
 @RequiredArgsConstructor
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
-    private final UserRepository userRepository;
+    private final SocialUserRepository socialUserRepository;
     private final HttpSession httpSession;
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -44,7 +45,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         OAuthAttributes attributes = OAuthAttributes
                 .of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
-        User user = saveOrUpdate(attributes);
+        SocialUser user = saveOrUpdate(attributes);
         //SessionUser: 세션에 사용자 정보를 저장하기 위한 DTO 클래스 (개발자가 생성)
         httpSession.setAttribute("user", new SessionUser(user));
 
@@ -59,11 +60,11 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         );
     }
 
-    private User saveOrUpdate(OAuthAttributes attributes) {
-        User user = userRepository.findByEmail(attributes.getEmail())
+    private SocialUser saveOrUpdate(OAuthAttributes attributes) {
+        SocialUser user = socialUserRepository.findByEmail(attributes.getEmail())
                 .map(entity -> entity.update(attributes.getName(),attributes.getPicture()))
                 .orElse(attributes.toEntity());
 
-        return userRepository.save(user);
+        return socialUserRepository.save(user);
     }
 }

@@ -1,6 +1,6 @@
-package com.example.WineOclocK.spring.config.auth.dto;
+package com.example.WineOclocK.spring.config.oauth.dto;
 
-import com.example.WineOclocK.spring.domain.entity.User;
+import com.example.WineOclocK.spring.domain.entity.SocialUser;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,8 +18,8 @@ public class SessionUser implements Serializable {
     private String email;
     private String picture;
 
-    public SessionUser(User user) {
-        this.name = user.getUsername();
+    public SessionUser(SocialUser user) {
+        this.name = user.getName();
         this.email = user.getEmail();
         this.picture = user.getPicture();
     }
