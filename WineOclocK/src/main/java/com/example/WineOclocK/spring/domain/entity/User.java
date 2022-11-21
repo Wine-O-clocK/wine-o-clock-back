@@ -3,13 +3,20 @@ package com.example.WineOclocK.spring.domain.entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
 @Entity //테이블과 링크될 클래스 임을 나타냄 : 카멜케이스 이름 -> 언더스코어 네이밍으로 테이블 이름 매친
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,19 +48,35 @@ public class User {
     @Column(length = 10)
     private String userLikeAroma3;
 
-    @Column
-    private String picture;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Builder.Default
+    private List<String> roles = new ArrayList<>();
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+    }
 
-    @Builder
-    public User(String name, String email, String picture, Role role) {
-        this.username = name;
-        this.email = email;
-        this.picture = picture;
-        this.role = role;
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     @Builder
@@ -73,13 +96,17 @@ public class User {
         this.userLikeAroma3 = userLikeAroma3;
     }
 
-    public String getRoleKey() {
-        return this.role.getKey();
-    }
-
-    public User update(String name, String picture) {
-        this.username = name;
-        this.picture = picture;
+    public User update( String username, String birthday,
+                        String userLikeType, int userLikeSweet, int userLikeBody,
+                        String userLikeAroma1, String userLikeAroma2, String userLikeAroma3) {
+        this.username = username;
+        this.birthday = birthday;
+        this.userLikeType = userLikeType;
+        this.userLikeSweet = userLikeSweet;
+        this.userLikeBody = userLikeBody;
+        this.userLikeAroma1 = userLikeAroma1;
+        this.userLikeAroma2 = userLikeAroma2;
+        this.userLikeAroma3 = userLikeAroma3;
 
         return this;
     }
