@@ -12,12 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /*
-*
 * 해당 클래스는 JwtTokenProvider 가 검증을 끝낸 JWT 로부터 유저 정보를 조회해와서
 * UserPasswordAuthenticationFilter 로 전달
-*
 */
-
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends GenericFilterBean {
     private final JwtTokenProvider jwtTokenProvider;

@@ -10,9 +10,7 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Getter
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity //테이블과 링크될 클래스 임을 나타냄 : 카멜케이스 이름 -> 언더스코어 네이밍으로 테이블 이름 매칭
 public class User{
     @Id
@@ -44,17 +42,16 @@ public class User{
     private String userLikeAroma2;
     @Column(length = 10)
     private String userLikeAroma3;
-    private String role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
 
     @CreationTimestamp
     private Timestamp createDate; // 회원가입한 날짜
 
-    public void setRole( String role ) {
-        this.role = role;
-    }
-
     @Builder
-    public User(String email, String password, String username, String birthday,
+    public User(String email, String password, String username, String birthday, Role role,
                 String userLikeType, int userLikeSweet, int userLikeBody,
                 String userLikeAroma1, String userLikeAroma2, String userLikeAroma3) {
 
@@ -62,6 +59,7 @@ public class User{
         this.password = password;
         this.username = username;
         this.birthday = birthday;
+        this.role = role;
 
         this.userLikeType = userLikeType;
         this.userLikeSweet = userLikeSweet;

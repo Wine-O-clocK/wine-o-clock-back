@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -36,7 +37,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    @Override
+    @Override //인증을 무시할 경로 설정
+    public void configure(WebSecurity web) {
+        web.ignoring().antMatchers("/css/**", "/js/**", "/img/**");
+    }
+
+    @Override // http 관련 인증 설정
     protected void configure(HttpSecurity http) throws Exception  {
         http
                 // + 토큰에 저장된 유저정보를 활용하여야 하기 때문에 CustomUserDetailService 클래스를 생성 -> 세션을 사용하지 않기 위해
@@ -48,29 +54,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .formLogin().disable()
                 .httpBasic().disable();
-        http
+
+        http.authorizeRequests()
                     // 모두 접근 가능한 URL
-                    .authorizeRequests()
-                    .antMatchers("/","/login/oauth2","/login", "/join", "/refresh")
-                    .permitAll()
-                .and()
-                    // USER만 접근 가능한 URL
-                    .authorizeRequests()
-                    .antMatchers("/test/user")
-                    .authenticated()
-                .and()
+                    .antMatchers("/","/login/oauth2","/login", "/join", "/user").permitAll()
+                    // USER 만 접근 가능한 URL
+                    .antMatchers("/test/user").authenticated()
                     // ADMIN 만 접근 가능한 URL
-                    .authorizeRequests()
-                    .antMatchers("/test/admin")
-                    .hasRole("ROLE_ADMIN")
+                    .antMatchers("/test/admin").hasRole("ROLE_ADMIN")
+                    // 그 이외에는 인증된 사용자만 접근 가능
+                    .anyRequest().authenticated()
+
                 .and()
-                    // 그 이외에는 인증된 사용자만 접근 가능하게 합니다.
-                    .authorizeRequests()
-                    .anyRequest()
-                    .authenticated()
+                    .formLogin() // 로그인 설정 시작
+                    .loginPage("/login") // 로그인 페이지 링크
+                    .defaultSuccessUrl("/") // 로그인 성공 후 리다이렉트 주소
                 .and()
                     .logout()
                     .logoutSuccessUrl("/")
+                    .invalidateHttpSession(true) // 로그아웃 이후 세션 전체 삭제 여부
                 .and()
                     .oauth2Login() // oauth2Login 설정 시작
                     .userInfoEndpoint() // oauth2Login 성공 이후의 설정을 시작

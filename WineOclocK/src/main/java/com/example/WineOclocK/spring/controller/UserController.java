@@ -1,6 +1,7 @@
 package com.example.WineOclocK.spring.controller;
 
 import com.example.WineOclocK.spring.config.security.JwtTokenProvider;
+import com.example.WineOclocK.spring.domain.entity.Role;
 import com.example.WineOclocK.spring.domain.entity.User;
 import com.example.WineOclocK.spring.domain.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -34,7 +35,7 @@ public class UserController {
         return userRepository.save(User.builder()
                 .email(user.get("email"))
                 .password(passwordEncoder.encode(user.get("password")))
-                .role("USER_ROLE") // 최초 가입시 USER 로 설정
+                .role(Role.USER) // 최초 가입시 USER 로 설정
                 .build()).getUserId();
     }
 
@@ -48,7 +49,6 @@ public class UserController {
         if (!passwordEncoder.matches(user.get("password"), member.getPassword())) {
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
-
         return jwtTokenProvider.createToken(member.getUsername(), member.getRole());
     }
 
