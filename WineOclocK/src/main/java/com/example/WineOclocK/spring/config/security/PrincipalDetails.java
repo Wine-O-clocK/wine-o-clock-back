@@ -29,29 +29,16 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
         return attributes;
     }
 
-    @Override //권한을 리턴
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-
-        Collection<GrantedAuthority> collectors = new ArrayList<>();
-        collectors.add(() -> {
-            return "ROLE_USER";
-        });
-        return collectors;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Set<GrantedAuthority> roles = new HashSet<>();
-        for (String role : auth.split(",")) {
-            roles.add(new SimpleGrantedAuthority(role));
-        }
-        return roles;
-    }
-
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> authList = new ArrayList<>();
-        authList.add(new SimpleGrantedAuthority(user.getRole()));
-        return authList;
+        Collection<GrantedAuthority> collect = new ArrayList<>();
+        collect.add(new GrantedAuthority() {
+            @Override
+            public String getAuthority() {
+                return user.getRole().toString();
+            }
+        });
+        return collect;
     }
 
     @Override

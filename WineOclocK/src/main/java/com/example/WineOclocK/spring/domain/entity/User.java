@@ -1,9 +1,6 @@
 package com.example.WineOclocK.spring.domain.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -44,7 +41,7 @@ public class User{
     private String userLikeAroma3;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Setter
     private Role role;
 
     @CreationTimestamp

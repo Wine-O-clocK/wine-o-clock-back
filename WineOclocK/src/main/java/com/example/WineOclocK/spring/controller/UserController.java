@@ -40,7 +40,7 @@ public class UserController {
     }
 
     // 로그인
-    @PostMapping("/loginCustom")
+    @PostMapping("/login")
     public String login(@RequestBody Map<String, String> user) {
 
         User member = userRepository.findByEmail(user.get("email"))
@@ -49,7 +49,8 @@ public class UserController {
         if (!passwordEncoder.matches(user.get("password"), member.getPassword())) {
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
-        return jwtTokenProvider.createToken(member.getUsername(), member.getRole());
+
+        return null;
     }
 
     @GetMapping("/checkJWT")
