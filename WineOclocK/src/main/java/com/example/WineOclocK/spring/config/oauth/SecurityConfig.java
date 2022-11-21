@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
@@ -23,40 +24,45 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtTokenProvider jwtTokenProvider;
     private final CustomOAuth2UserService customOAuth2UserService; //로그인 후 액션 커스텀
 
-    // authenticationManager를 Bean 등록
+    // authenticationManager 를 Bean 등록
     @Bean
-    @Override
+    @Override //비밀번호를 암호화. controller 에 빈으로 등록된 BCryptPasswordEncoder 를 자동 주입
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception  {
         http
-                .csrf().disable()
+                // + 토큰에 저장된 유저정보를 활용하여야 하기 때문에 CustomUserDetailService 클래스를 생성 -> 세션을 사용하지 않기 위해
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 .and()
 
+                .csrf().disable()
                 .formLogin().disable()
                 .httpBasic().disable();
         http
-                // 모두 접근 가능한 URL
-                .authorizeRequests()
-                .antMatchers(
-                        "/","/login/oauth2","/login", "/join", "/refresh",
-                        "/swagger-ui.html", "/swagger/**", "/swagger-resources/**", "/webjars/**", "/v2/api-docs",
-                        "/notice/**").permitAll()
+                    // 모두 접근 가능한 URL
+                    .authorizeRequests()
+                    .antMatchers("/","/login/oauth2","/login", "/join", "/refresh")
+                    .permitAll()
                 .and()
-                    // USER만 접근 가능한 URLㄱ
+                    // USER만 접근 가능한 URL
                     .authorizeRequests()
                     .antMatchers("/test/user")
                     .authenticated()
                 .and()
-                    // ADMIN만 접근 가능한 URL
+                    // ADMIN 만 접근 가능한 URL
                     .authorizeRequests()
                     .antMatchers("/test/admin")
-                    .hasRole("ADMIN")
+                    .hasRole("ROLE_ADMIN")
                 .and()
                     // 그 이외에는 인증된 사용자만 접근 가능하게 합니다.
                     .authorizeRequests()
@@ -72,7 +78,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // JwtAuthenticationFilter 를 UsernamePasswordAuthenticationFilter 전에 넣는다
         http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
-        // + 토큰에 저장된 유저정보를 활용하여야 하기 때문에 CustomUserDetailService 클래스를 생성 -> 세션을 사용하지 않기 위해
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 }

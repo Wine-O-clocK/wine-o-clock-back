@@ -19,6 +19,17 @@
             {{^userName}}
                 <a href="/oauth2/authorization/google" class="btn btn-success active" role="button">Google Login</a>
                 <a href="/oauth2/authorization/naver" class="btn btn-secondary active" role="button">Naver Login</a>
+
+                <form action="/loginCustom" method="post" name="loginCustom">
+                    <input type="text" name="email" placeholder="email을 입력하세요">
+                    <input type="password" name="password" placeholder="비밀번호를 입력하세요">
+                </form>
+                <button onclick="loginCustom_ajax()">로그인</button>
+                <form action="to_ajax();" method="post" name="join">
+                    <input type="text" name="email" placeholder="email을 입력하세요">
+                    <input type="password" name="password" placeholder="비밀번호를 입력하세요">
+                </form>
+                <button onclick="join_ajax()">회원가입</button>
             {{/userName}}
         </div>
     </div>

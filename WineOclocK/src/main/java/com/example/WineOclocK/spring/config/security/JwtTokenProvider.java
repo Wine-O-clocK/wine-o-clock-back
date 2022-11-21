@@ -28,10 +28,10 @@ import java.util.List;
 @Component
 public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
 
-    @Value("spring.jwt.secret")
-    private String secretKey;
+    private String secretKey = "myprojectsecret";;
     private final UserDetailsService userDetailsService;
 
+    // 객체 초기화, secretKey -> Base64로 인코딩
     @PostConstruct
     protected void init() {  // 객체 초기화, secretKey 를 Base64로 인코딩한다.
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
@@ -41,12 +41,10 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
     public String createToken(String userPk, List<String> roles) {
         // JWT payload 에 저장되는 정보단위, 보통 여기서 user 를 식별하는 값을 넣음
         Claims claims = Jwts.claims().setSubject(userPk);
-        // 정보는 key / value 쌍으로 저장
-        claims.put("roles", roles);
+        claims.put("roles", roles); // 정보는 key / value 쌍으로 저장
         Date now = new Date();
+        long tokenValidTime = 60 * 60 * 1000L; //토큰 유효 시간
 
-        //토큰 유효 시간
-        long tokenValidTime = 60 * 60 * 1000L;
         return Jwts.builder()
                 .setClaims(claims) // 데이터 저장
                 .setIssuedAt(now) // 토큰 발행일자
@@ -66,7 +64,7 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    // Request의 Header에서 token 파싱 : "Authorization : jwt 토큰 값"
+    // Request 의 Header 에서 token 파싱 : "Authorization : jwt 토큰 값"
     public String resolveToken(HttpServletRequest request) {
         return request.getHeader("Authorization");
     }

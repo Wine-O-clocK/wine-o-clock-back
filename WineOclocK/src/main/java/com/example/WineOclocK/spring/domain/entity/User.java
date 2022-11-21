@@ -1,23 +1,20 @@
 package com.example.WineOclocK.spring.domain.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.sql.Timestamp;
 
 @Getter
+@Builder
 @NoArgsConstructor
-@Entity //테이블과 링크될 클래스 임을 나타냄 : 카멜케이스 이름 -> 언더스코어 네이밍으로 테이블 이름 매친
-public class User implements UserDetails {
-
+@AllArgsConstructor
+@Entity //테이블과 링크될 클래스 임을 나타냄 : 카멜케이스 이름 -> 언더스코어 네이밍으로 테이블 이름 매칭
+public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId; //내부 사용자 수 체크용
@@ -47,36 +44,13 @@ public class User implements UserDetails {
     private String userLikeAroma2;
     @Column(length = 10)
     private String userLikeAroma3;
+    private String role;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Builder.Default
-    private List<String> roles = new ArrayList<>();
+    @CreationTimestamp
+    private Timestamp createDate; // 회원가입한 날짜
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles.stream()
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
+    public void setRole( String role ) {
+        this.role = role;
     }
 
     @Builder
@@ -88,6 +62,7 @@ public class User implements UserDetails {
         this.password = password;
         this.username = username;
         this.birthday = birthday;
+
         this.userLikeType = userLikeType;
         this.userLikeSweet = userLikeSweet;
         this.userLikeBody = userLikeBody;
