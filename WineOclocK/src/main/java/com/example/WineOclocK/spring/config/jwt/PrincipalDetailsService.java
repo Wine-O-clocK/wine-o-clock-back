@@ -1,4 +1,4 @@
-package com.example.WineOclocK.spring.config.security;
+package com.example.WineOclocK.spring.config.jwt;
 
 import com.example.WineOclocK.spring.domain.entity.User;
 import com.example.WineOclocK.spring.domain.repository.UserRepository;

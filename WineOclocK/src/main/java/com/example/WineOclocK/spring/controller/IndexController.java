@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class IndexController {
     @GetMapping("/")
     public String index(Model model, @LoginUser SessionUser user) {
-
         if (user != null){
             model.addAttribute("userName", user.getName());
         }
@@ -32,23 +31,8 @@ public class IndexController {
         return "admin";
     }
 
-    @GetMapping("/manager")
+    @GetMapping("/guest")
     public @ResponseBody String manager() {
-        return "manager";
-    }
-
-    @GetMapping("/login")
-    public String loginForm() {
-        return "login";
-    }
-
-    @GetMapping("/joinForm")
-    public String joinForm() {
-        return "joinForm";
-    }
-
-    @PostMapping("/join")
-    public String join(User user) {
-        return "redirect:/login";
+        return "guest";
     }
 }

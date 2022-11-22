@@ -1,38 +1,35 @@
 package com.example.WineOclocK.spring.config.oauth;
 
-import com.example.WineOclocK.spring.config.security.JwtAuthenticationFilter;
-import com.example.WineOclocK.spring.config.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * Spring Security 설정 클래스
  */
 @Configuration
 @RequiredArgsConstructor
-@EnableWebSecurity //Spring Security 설정들을 활성화, @EnableWebSecurity 는 모든 요청 URL 이 스프링 시큐리티의 제어를 받도록 만드는 애너테이션이다.
+//@AllArgsConstructor
+@EnableWebSecurity // 스프링 시큐리티 필터가 스프링 필터 체인에 등록!
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    //private final JwtTokenProvider jwtTokenProvider;
     private final CustomOAuth2UserService customOAuth2UserService; //로그인 후 액션 커스텀
 
     // authenticationManager 를 Bean 등록
-    @Bean
-    @Override //비밀번호를 암호화. controller 에 빈으로 등록된 BCryptPasswordEncoder 를 자동 주입
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
+//    @Bean
+//    @Override
+//    public AuthenticationManager authenticationManagerBean() throws Exception {
+//        return super.authenticationManagerBean();
+//    }
 
-    @Bean
+    @Bean //비밀번호를 암호화. controller 에 빈으로 등록된 BCryptPasswordEncoder 를 자동 주입
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
@@ -57,11 +54,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                     // 모두 접근 가능한 URL
-                    .antMatchers("/","/login/oauth2","/login", "/join", "/user").permitAll()
+                    .antMatchers("/","/login/oauth2","/login", "/join", "/user", "/test").permitAll()
                     // USER 만 접근 가능한 URL
-                    .antMatchers("/test/user").authenticated()
+                    .antMatchers("/test/user").access("hasRole('ROLE_USER')")
                     // ADMIN 만 접근 가능한 URL
-                    .antMatchers("/test/admin").hasRole("ROLE_ADMIN")
+                    .antMatchers("/test/admin").access("hasRole('ROLE_ADMIN')")
                     // 그 이외에는 인증된 사용자만 접근 가능
                     .anyRequest().authenticated()
 
@@ -76,9 +73,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .oauth2Login() // oauth2Login 설정 시작
                     .userInfoEndpoint() // oauth2Login 성공 이후의 설정을 시작
-                    .userService(customOAuth2UserService);
+                    .userService(customOAuth2UserService); // SNS 로그인이 완료된 뒤 후처리가 필요함. 엑세스토큰+사용자프로필 정보
 
         // JwtAuthenticationFilter 를 UsernamePasswordAuthenticationFilter 전에 넣는다
-        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+        //http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
     }
 }

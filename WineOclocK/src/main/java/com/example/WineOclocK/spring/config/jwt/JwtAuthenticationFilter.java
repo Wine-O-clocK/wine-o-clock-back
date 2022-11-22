@@ -1,7 +1,5 @@
-package com.example.WineOclocK.spring.config.security;
+package com.example.WineOclocK.spring.config.jwt;
 
-import com.example.WineOclocK.spring.config.security.JwtTokenProvider;
-import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
