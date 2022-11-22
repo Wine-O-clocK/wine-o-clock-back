@@ -1,53 +1,52 @@
 package com.example.WineOclocK.spring.controller;
 
+import com.example.WineOclocK.spring.domain.entity.Role;
 import com.example.WineOclocK.spring.domain.entity.User;
 import com.example.WineOclocK.spring.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @RequiredArgsConstructor
-@RestController
+@Controller
 public class UserController {
-
-    private final PasswordEncoder passwordEncoder;
     //private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     /**
      * 로그인
      * @return
      */
-    @GetMapping("/login")
+    @GetMapping("/loginForm")
     public String loginForm() {
         return "login";
     }
 
     @PostMapping("/login")
     public String login(@RequestBody Map<String, String> user) {
-
-        User member = userRepository.findByEmail(user.get("email"))
-                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 E-MAIL 입니다."));
-
-        if (!passwordEncoder.matches(user.get("password"), member.getPassword())) {
-            throw new IllegalArgumentException("잘못된 비밀번호입니다.");
-        }
-        return null;
+        return "login";
     }
 
 
-    @GetMapping("/join")
+    @GetMapping("/joinForm")
     public String joinForm() {
-        return "joinForm";
+        return "join";
     }
 
     @PostMapping("/join")
-    public String join(User user) {
+    public String join(@ModelAttribute User user) {
+        user.setRole(Role.ROLE_USER);
+
+        String encodePwd = bCryptPasswordEncoder.encode(user.getPassword());
+        user.setPassword(encodePwd);
+
+        userRepository.save(user);  //반드시 패스워드 암호화해야함
         return "redirect:/login";
     }
 }
