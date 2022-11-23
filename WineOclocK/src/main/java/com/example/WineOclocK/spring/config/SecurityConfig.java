@@ -50,8 +50,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
 
                 .csrf().disable()
-                .formLogin().disable()
-                .httpBasic().disable();
+                .formLogin().disable() //formLogin 인증방법 비활성화
+                .httpBasic().disable(); //httpBasic 인증방법 비활성화(특정 리소스에 접근할 때 username, password 물어봄)
 
         http.authorizeRequests()
                     // 모두 접근 가능한 URL
