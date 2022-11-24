@@ -1,37 +1,40 @@
 package com.example.WineOclocK.spring.config;
 
+import com.example.WineOclocK.spring.config.jwt.JwtAuthenticationFilter;
+import com.example.WineOclocK.spring.config.jwt.JwtTokenProvider;
 import com.example.WineOclocK.spring.config.oauth.CustomOAuth2UserService;
+import com.example.WineOclocK.spring.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * Spring Security 설정 클래스
  */
 @Configuration
 @RequiredArgsConstructor
-//@AllArgsConstructor
 @EnableWebSecurity // 스프링 시큐리티 필터가 스프링 필터 체인에 등록!
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-    //private final JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    private CorsConfig corsConfig;
+    @Autowired
+    private UserRepository userRepository;
+    private final JwtTokenProvider jwtTokenProvider;
     private final CustomOAuth2UserService customOAuth2UserService; //로그인 후 액션 커스텀
 
-    // authenticationManager 를 Bean 등록
-//    @Bean
-//    @Override
-//    public AuthenticationManager authenticationManagerBean() throws Exception {
-//        return super.authenticationManagerBean();
-//    }
-
     @Bean //비밀번호를 암호화. controller 에 빈으로 등록된 BCryptPasswordEncoder 를 자동 주입
-    public BCryptPasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -43,15 +46,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override // http 관련 인증 설정
     protected void configure(HttpSecurity http) throws Exception  {
         http
-                // + 토큰에 저장된 유저정보를 활용하여야 하기 때문에 CustomUserDetailService 클래스를 생성 -> 세션을 사용하지 않기 위해
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
-                .and()
-
+                .addFilter(corsConfig.corsFilter())
                 .csrf().disable()
+                // + 토큰에 저장된 유저정보를 활용하여야 하기 때문에 CustomUserDetailService 클래스를 생성 -> 세션을 사용 안 함
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                 .formLogin().disable() //formLogin 인증방법 비활성화
-                .httpBasic().disable(); //httpBasic 인증방법 비활성화(특정 리소스에 접근할 때 username, password 물어봄)
+                .httpBasic().disable() //httpBasic 인증방법 비활성화(특정 리소스에 접근할 때 username, password 물어봄)
+
+                .addFilter(new JwtAuthenticationFilter((JwtTokenProvider) authenticationManager()))
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository));
 
         http.authorizeRequests()
                     // 모두 접근 가능한 URL
@@ -79,6 +83,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .userService(customOAuth2UserService); // SNS 로그인이 완료된 뒤 후처리가 필요함. 엑세스토큰 + 사용자프로필 정보
 
         // JwtAuthenticationFilter 를 UsernamePasswordAuthenticationFilter 전에 넣는다
-        //http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
     }
 }
