@@ -1,15 +1,17 @@
-package com.example.WineOclocK.domain.entity;
+package com.example.WineOclocK.domain.repository;
 
 import com.example.WineOclocK.spring.domain.entity.User;
 import com.example.WineOclocK.spring.domain.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 //@WebMvcTest   // web API 를 테스트 할 때 사용
@@ -20,14 +22,21 @@ public class UserRepositoryTest {
 
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    EntityManager em;
 
-    @After //단위 테스트가 끝날 때마다 수행
-    public void cleanup() {
-        userRepository.deleteAll();
+    private void clear(){
+        em.flush();
+        em.clear();
+    }
+
+    @AfterEach
+    public void after(){
+        em.clear();
     }
 
     @Test
-    public void user_data_insert(){
+    public void 회원저장_성공() throws Exception{
         //given
         String email = "song@sookmyung.ac.kr";
         String password = "password1234";
@@ -47,5 +56,14 @@ public class UserRepositoryTest {
         User user = userList.get(0);
         Assertions.assertThat(user.getEmail()).isEqualTo(email);
     }
+
+//    @Test
+//    public void 오류_회원가입시_이름이_없음() throws Exception {
+//        //given
+//        User user = User.builder().username("username").password("1234567890").nickName("NickName1").role(Role.USER).age(22).build();
+//
+//        //when, then
+//        assertThrows(Exception.class, () -> memberRepository.save(member));
+//    }
 
 }
