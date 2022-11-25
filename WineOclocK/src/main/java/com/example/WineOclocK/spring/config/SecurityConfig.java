@@ -3,7 +3,6 @@ package com.example.WineOclocK.spring.config;
 import com.example.WineOclocK.spring.config.auth.PrincipalDetailsService;
 import com.example.WineOclocK.spring.config.jwt.JwtAuthenticationFilter;
 import com.example.WineOclocK.spring.config.jwt.JwtAuthorizationFilter;
-import com.example.WineOclocK.spring.config.jwt.JwtTokenProvider;
 import com.example.WineOclocK.spring.config.oauth.CustomOAuth2UserService;
 import com.example.WineOclocK.spring.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +34,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private final UserRepository userRepository;
     //private final PrincipalDetailsService principalDetailsService;
+
+    // Service 에서 비밀번호를 암호화할 수 있도록 Bean 으로 등록
+    @Bean
+    public BCryptPasswordEncoder encodePassword() {
+        return new BCryptPasswordEncoder();
+    }
+
     private final CustomOAuth2UserService customOAuth2UserService; //로그인 후 액션 커스텀
 
     @Override //인증을 무시할 경로 설정

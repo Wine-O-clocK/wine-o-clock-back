@@ -18,6 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
@@ -51,6 +52,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     }
     private Authentication getUsernamePasswordAuthentication(HttpServletRequest request) {
         String token = request.getHeader(JwtProperties.HEADER_STRING);
+
         if(token != null){
             // parse the token and validate it (decode)
             String username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET.getBytes()))
@@ -63,8 +65,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             // Search in the DB if we find the user by token subject (username)
             // If so, then grab user details and create spring auth token using username, pass, authorities/roles
             if(username != null){
-                User user = userRepository.findByEmail(username);
-                PrincipalDetails principalDetails = new PrincipalDetails(user);
+                Optional<User> user = userRepository.findByEmail(username);
+                PrincipalDetails principalDetails = new PrincipalDetails(user.get());
                 return new UsernamePasswordAuthenticationToken(
                         username, null, principalDetails.getAuthorities());
             }

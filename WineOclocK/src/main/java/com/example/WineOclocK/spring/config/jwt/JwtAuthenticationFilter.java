@@ -80,7 +80,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             e.printStackTrace();
         }
 
-        logger.debug("JwtAuthenticationFilter :: {}", loginDto);
+        //logger.debug("JwtAuthenticationFilter :: {}", loginDto);
 
         // 유저네임패스워드 토큰 생성
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
@@ -100,8 +100,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
 
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        logger.debug("Authentication :: {}", principalDetails.getUser().getEmail());
-        logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
+        //logger.debug("Authentication :: {}", principalDetails.getUser().getEmail());
+        //logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 
         return authentication;
     }
@@ -110,12 +110,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication( HttpServletRequest request, HttpServletResponse response,
                                              FilterChain chain, Authentication authResult ) throws IOException, ServletException {
-        logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
+        //logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 
         PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
 
-        logger.debug("UserId :: {}", principalDetails.getUser().getUserId());
-        logger.debug("Email :: {}", principalDetails.getUser().getEmail());
+        //logger.debug("UserId :: {}", principalDetails.getUser().getUserId());
+        //logger.debug("Email :: {}", principalDetails.getUser().getEmail());
 
         String jwtToken = JWT.create()
                 .withSubject(principalDetails.getUsername())

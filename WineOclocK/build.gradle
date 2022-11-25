@@ -31,10 +31,9 @@ dependencies {
 
 	//jwt
 	implementation group: 'com.auth0', name: 'java-jwt', version: '3.19.0'
-	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
 	// session
-	implementation('org.springframework.session:spring-session-jdbc')
+	implementation 'org.springframework.session:spring-session-jdbc'
 
 	testImplementation 'org.testng:testng:7.6.1'
 	testImplementation 'junit:junit:4.13.2'

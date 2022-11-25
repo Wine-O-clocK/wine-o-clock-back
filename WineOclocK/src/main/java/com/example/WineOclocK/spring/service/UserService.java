@@ -1,15 +1,11 @@
 package com.example.WineOclocK.spring.service;
 
-import com.example.WineOclocK.spring.config.jwt.JwtTokenProvider;
 import com.example.WineOclocK.spring.domain.dto.JoinDto;
 import com.example.WineOclocK.spring.domain.dto.LoginDto;
-import com.example.WineOclocK.spring.domain.entity.Role;
 import com.example.WineOclocK.spring.domain.entity.User;
 import com.example.WineOclocK.spring.domain.repository.UserRepository;
-import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,21 +13,18 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 public class UserService {
-
-    private final JwtTokenProvider jwtTokenProvider;
-    private final PasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private UserRepository userRepository;
 
     public String login(LoginDto loginDto) {
-
         User user = userRepository.findByEmail(loginDto.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 이메일 입니다."));
 
-        if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
+        if (!bCryptPasswordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
         // 로그인에 성공하면 토큰 생성 후 반환
-        return null; //jwtTokenProvider.createToken(user.getEmail(), user.getRole());
+        return null;
     }
 
     /**
@@ -44,23 +37,29 @@ public class UserService {
             throw new IllegalArgumentException("이미 존재하는 이메일 입니다");
         }
 
-        String encodedPassword = passwordEncoder.encode(joinDto.getPassword());
+        try {
+            User user = User.builder()
+                    .userId(joinDto.getUserId())
+                    .email(joinDto.getEmail())
+                    .password(bCryptPasswordEncoder.encode(joinDto.getPassword())) //비밀번호 인코딩
+                    .birthday(joinDto.getBirthday())
+                    .username(joinDto.getUsername())
 
-        User user = User.builder()
-                .email(joinDto.getEmail())
-                .password(encodedPassword) //비밀번호 인코딩
-                .birthday(joinDto.getBirthday())
-                .username(joinDto.getUsername())
+                    .userLikeType(joinDto.getUserLikeType())
+                    .userLikeSweet(joinDto.getUserLikeSweet())
+                    .userLikeBody(joinDto.getUserLikeBody())
 
-                .userLikeType(joinDto.getUserLikeType())
-                .userLikeSweet(joinDto.getUserLikeSweet())
-                .userLikeBody(joinDto.getUserLikeBody())
+                    .userLikeAroma1(joinDto.getUserLikeAroma1())
+                    .userLikeAroma2(joinDto.getUserLikeAroma2())
+                    .userLikeAroma3(joinDto.getUserLikeAroma3())
+                    .role(joinDto.getRole())
+                    .build();
 
-                .userLikeAroma1(joinDto.getUserLikeAroma1())
-                .userLikeAroma2(joinDto.getUserLikeAroma2())
-                .userLikeAroma3(joinDto.getUserLikeAroma3())
-                .role(joinDto.getRole())
-                .build();
+            userRepository.save(user);
+        } catch (Exception exception) {
+            throw new IllegalArgumentException("로그인 서비스 빌드 오류");
+        }
+
     }
 //    /**
 //     * 회원정보 저장

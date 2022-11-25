@@ -49,9 +49,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @CreationTimestamp
-    private Timestamp createDate; // 회원가입한 날짜
-
     @Override
     public String toString() {
         return
