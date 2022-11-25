@@ -51,4 +51,14 @@ public class User {
 
     @CreationTimestamp
     private Timestamp createDate; // 회원가입한 날짜
+
+    @Override
+    public String toString() {
+        return
+                "email = " + email + " password = " + password + " role = " + role
+                        + "\n username = " + username+ "birthday = " + birthday
+                        + "\n" + "userLikeType = " + userLikeType
+                        + "\n" + " userLikeSweet = " + userLikeSweet + " userLikeBody = " + userLikeBody
+                        + "\n" + "userLikeAroma1 = " + userLikeAroma1 + " userLikeAroma2 = " + userLikeAroma2 + " userLikeAroma3 = " + userLikeAroma3 ;
+    }
 }

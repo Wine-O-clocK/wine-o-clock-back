@@ -61,6 +61,7 @@ public class UserController {
     // 로그인 API
     @PostMapping("/login")
     public String login(@RequestBody LoginDto loginDto) {
+
         return userService.login(loginDto);
     }
 }

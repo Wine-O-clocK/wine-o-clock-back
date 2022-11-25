@@ -1,6 +1,8 @@
 package com.example.WineOclocK.spring.config;
 
+import com.example.WineOclocK.spring.config.auth.PrincipalDetailsService;
 import com.example.WineOclocK.spring.config.jwt.JwtAuthenticationFilter;
+import com.example.WineOclocK.spring.config.jwt.JwtAuthorizationFilter;
 import com.example.WineOclocK.spring.config.jwt.JwtTokenProvider;
 import com.example.WineOclocK.spring.config.oauth.CustomOAuth2UserService;
 import com.example.WineOclocK.spring.domain.repository.UserRepository;
@@ -9,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -29,14 +33,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private CorsConfig corsConfig;
     @Autowired
-    private UserRepository userRepository;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
+    //private final PrincipalDetailsService principalDetailsService;
     private final CustomOAuth2UserService customOAuth2UserService; //로그인 후 액션 커스텀
-
-    @Bean //비밀번호를 암호화. controller 에 빈으로 등록된 BCryptPasswordEncoder 를 자동 주입
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
     @Override //인증을 무시할 경로 설정
     public void configure(WebSecurity web) {
@@ -54,8 +53,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().disable() //formLogin 인증방법 비활성화
                 .httpBasic().disable() //httpBasic 인증방법 비활성화(특정 리소스에 접근할 때 username, password 물어봄)
 
-                .addFilter(new JwtAuthenticationFilter((JwtTokenProvider) authenticationManager()))
-                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository));
+                // add jwt filters (1. authentication, 2. authorization)
+                .addFilter(new JwtAuthenticationFilter(authenticationManager()))
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), this.userRepository));
 
         http.authorizeRequests()
                     // 모두 접근 가능한 URL
@@ -82,7 +82,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .userInfoEndpoint()                                     // oauth2Login 성공 이후의 설정을 시작
                     .userService(customOAuth2UserService); // SNS 로그인이 완료된 뒤 후처리가 필요함. 엑세스토큰 + 사용자프로필 정보
 
-        // JwtAuthenticationFilter 를 UsernamePasswordAuthenticationFilter 전에 넣는다
-        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
     }
 }
