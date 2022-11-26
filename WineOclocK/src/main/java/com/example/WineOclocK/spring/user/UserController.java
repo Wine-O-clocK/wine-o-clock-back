@@ -1,19 +1,8 @@
-package com.example.WineOclocK.spring.controller;
+package com.example.WineOclocK.spring.user;
 
-import com.example.WineOclocK.spring.domain.dto.JoinDto;
-import com.example.WineOclocK.spring.domain.dto.LoginDto;
-import com.example.WineOclocK.spring.domain.entity.Role;
-import com.example.WineOclocK.spring.domain.entity.User;
-import com.example.WineOclocK.spring.domain.repository.UserRepository;
-import com.example.WineOclocK.spring.service.UserService;
+import com.example.WineOclocK.spring.user.dto.JoinDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController

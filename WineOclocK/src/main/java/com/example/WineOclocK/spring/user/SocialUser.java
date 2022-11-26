@@ -1,5 +1,6 @@
-package com.example.WineOclocK.spring.domain.entity;
+package com.example.WineOclocK.spring.user;
 
+import com.example.WineOclocK.spring.domain.entity.Role;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

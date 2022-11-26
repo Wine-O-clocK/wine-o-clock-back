@@ -1,9 +1,9 @@
-package com.example.WineOclocK.spring.service;
+package com.example.WineOclocK.spring.user;
 
-import com.example.WineOclocK.spring.domain.dto.JoinDto;
-import com.example.WineOclocK.spring.domain.dto.LoginDto;
+import com.example.WineOclocK.spring.user.dto.JoinDto;
+import com.example.WineOclocK.spring.user.dto.LoginDto;
 import com.example.WineOclocK.spring.domain.entity.User;
-import com.example.WineOclocK.spring.domain.repository.UserRepository;
+import com.example.WineOclocK.spring.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public String login(LoginDto loginDto) {
         User user = userRepository.findByEmail(loginDto.getEmail())
@@ -33,9 +33,24 @@ public class UserService {
     @Transactional
     public void join(JoinDto joinDto) {
         // 이메일 중복 확인
-        if(!userRepository.existsByEmail(joinDto.getEmail())){
-            throw new IllegalArgumentException("이미 존재하는 이메일 입니다");
-        }
+//        if(!userRepository.existsByEmail(joinDto.getEmail())){
+//            throw new IllegalArgumentException("이미 존재하는 이메일 입니다");
+//        }
+
+        System.out.println(joinDto.getUserId());
+        System.out.println(joinDto.getEmail());
+        System.out.println(joinDto.getPassword());
+        System.out.println(joinDto.getBirthday());
+        System.out.println(joinDto.getUsername());
+
+        System.out.println(joinDto.getUserLikeType());
+        System.out.println(joinDto.getUserLikeSweet());
+        System.out.println(joinDto.getUserLikeAroma1());
+        System.out.println(joinDto.getUserLikeAroma2());
+        System.out.println(joinDto.getUserLikeAroma3());
+        System.out.println(joinDto.getRole());
+
+        System.out.println(userRepository);
 
         try {
             User user = User.builder()
@@ -61,19 +76,4 @@ public class UserService {
         }
 
     }
-//    /**
-//     * 회원정보 저장
-//     *
-//     * @param infoDto 회원정보가 들어있는 DTO
-//     * @return 저장되는 회원의 PK
-//     */
-//    public Long save(UserInfoDto infoDto) {
-//        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-//        infoDto.setPassword(encoder.encode(infoDto.getPassword()));
-//
-//        return userRepository.save(UserInfo.builder()
-//                .email(infoDto.getEmail())
-//                .auth(infoDto.getAuth())
-//                .password(infoDto.getPassword()).build()).getCode();
-//    }
 }

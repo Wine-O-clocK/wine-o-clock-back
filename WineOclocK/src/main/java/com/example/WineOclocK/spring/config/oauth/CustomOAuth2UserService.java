@@ -2,8 +2,8 @@ package com.example.WineOclocK.spring.config.oauth;
 
 import com.example.WineOclocK.spring.config.oauth.dto.OAuthAttributes;
 import com.example.WineOclocK.spring.config.oauth.dto.SessionUser;
-import com.example.WineOclocK.spring.domain.entity.SocialUser;
-import com.example.WineOclocK.spring.domain.repository.SocialUserRepository;
+import com.example.WineOclocK.spring.user.SocialUser;
+import com.example.WineOclocK.spring.user.SocialUserRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -1,10 +1,9 @@
 package com.example.WineOclocK.spring.domain.entity;
 
+import com.example.WineOclocK.spring.domain.entity.Role;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 
 @AllArgsConstructor
 @NoArgsConstructor

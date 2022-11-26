@@ -1,4 +1,4 @@
-package com.example.WineOclocK.spring.domain.dto;
+package com.example.WineOclocK.spring.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

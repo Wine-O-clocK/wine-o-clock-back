@@ -1,9 +1,8 @@
 package com.example.WineOclocK.domain.repository;
 
 import com.example.WineOclocK.spring.domain.entity.User;
-import com.example.WineOclocK.spring.domain.repository.UserRepository;
+import com.example.WineOclocK.spring.user.UserRepository;
 import org.assertj.core.api.Assertions;
-import org.junit.After;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.runner.RunWith;

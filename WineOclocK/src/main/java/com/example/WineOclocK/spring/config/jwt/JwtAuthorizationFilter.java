@@ -4,7 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.example.WineOclocK.spring.config.auth.PrincipalDetails;
 import com.example.WineOclocK.spring.domain.entity.User;
-import com.example.WineOclocK.spring.domain.repository.UserRepository;
+import com.example.WineOclocK.spring.user.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;

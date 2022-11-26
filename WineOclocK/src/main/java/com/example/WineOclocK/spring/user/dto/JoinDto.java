@@ -1,4 +1,4 @@
-package com.example.WineOclocK.spring.domain.dto;
+package com.example.WineOclocK.spring.user.dto;
 
 import com.example.WineOclocK.spring.domain.entity.Role;
 import lombok.Data;

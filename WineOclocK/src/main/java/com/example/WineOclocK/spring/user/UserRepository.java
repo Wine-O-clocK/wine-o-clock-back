@@ -1,4 +1,4 @@
-package com.example.WineOclocK.spring.domain.repository;
+package com.example.WineOclocK.spring.user;
 
 import com.example.WineOclocK.spring.domain.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
