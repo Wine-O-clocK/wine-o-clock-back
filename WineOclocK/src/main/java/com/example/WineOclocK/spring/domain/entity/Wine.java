@@ -31,21 +31,21 @@ public class Wine {
     private String wineAroma2; //null 가능
     private String wineAroma3; //null 가능
 
-    @Builder
-    public Wine(String wineName, String wineImg, String wineNameEng, String wineType,
-                int wineSweet, int wineBody, String wineVariety, int winePrice,
-                String wineAroma1, String wineAroma2, String wineAroma3) {
-
-        this.wineName = wineName;
-        this.wineImg = wineImg;
-        this.wineNameEng = wineNameEng;
-        this.wineType = wineType;
-        this.wineSweet = wineSweet;
-        this.wineBody = wineBody;
-        this.wineVariety = wineVariety;
-        this.winePrice = winePrice;
-        this.wineAroma1 = wineAroma1;
-        this.wineAroma2 = wineAroma2;
-        this.wineAroma3 = wineAroma3;
-    }
+//    @Builder
+//    public Wine(String wineName, String wineImg, String wineNameEng, String wineType,
+//                int wineSweet, int wineBody, String wineVariety, int winePrice,
+//                String wineAroma1, String wineAroma2, String wineAroma3) {
+//
+//        this.wineName = wineName;
+//        this.wineImg = wineImg;
+//        this.wineNameEng = wineNameEng;
+//        this.wineType = wineType;
+//        this.wineSweet = wineSweet;
+//        this.wineBody = wineBody;
+//        this.wineVariety = wineVariety;
+//        this.winePrice = winePrice;
+//        this.wineAroma1 = wineAroma1;
+//        this.wineAroma2 = wineAroma2;
+//        this.wineAroma3 = wineAroma3;
+//    }
 }

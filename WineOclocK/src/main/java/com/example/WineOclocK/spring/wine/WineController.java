@@ -1,7 +1,6 @@
-package com.example.WineOclocK.spring.controller;
+package com.example.WineOclocK.spring.wine;
 
 import com.example.WineOclocK.spring.domain.entity.Wine;
-import com.example.WineOclocK.spring.domain.repository.WineRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
