@@ -1,4 +1,4 @@
-package com.example.WineOclocK.spring.user;
+package com.example.WineOclocK.spring.user.social;
 
 import com.example.WineOclocK.spring.domain.entity.Role;
 import lombok.Builder;

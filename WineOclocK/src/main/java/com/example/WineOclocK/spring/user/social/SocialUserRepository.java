@@ -1,5 +1,6 @@
-package com.example.WineOclocK.spring.user;
+package com.example.WineOclocK.spring.user.social;
 
+import com.example.WineOclocK.spring.user.social.SocialUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
