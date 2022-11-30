@@ -39,7 +39,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         String header = request.getHeader(JwtProperties.HEADER_STRING);
 
         if (header == null || !header.startsWith(JwtProperties.TOKEN_PREFIX)) {
-            // rest of the spring pipeline
             chain.doFilter(request, response);
             return;
         }
@@ -50,6 +49,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         // Continue filter execution
         chain.doFilter(request, response);
     }
+
+    //생성된 JWT 토큰은 이후 사용자의 요청마다 헤더에 담아져 함께 전달
     private Authentication getUsernamePasswordAuthentication(HttpServletRequest request) {
         String token = request.getHeader(JwtProperties.HEADER_STRING);
 

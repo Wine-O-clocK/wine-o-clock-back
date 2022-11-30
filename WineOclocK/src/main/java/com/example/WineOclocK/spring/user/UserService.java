@@ -1,10 +1,13 @@
 package com.example.WineOclocK.spring.user;
 
+import com.example.WineOclocK.spring.domain.entity.Role;
 import com.example.WineOclocK.spring.user.dto.JoinDto;
 import com.example.WineOclocK.spring.user.dto.LoginDto;
 import com.example.WineOclocK.spring.domain.entity.User;
 import com.example.WineOclocK.spring.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +40,6 @@ public class UserService {
 //            throw new IllegalArgumentException("이미 존재하는 이메일 입니다");
 //        }
 
-        System.out.println(joinDto.getUserId());
         System.out.println(joinDto.getEmail());
         System.out.println(joinDto.getPassword());
         System.out.println(joinDto.getBirthday());
@@ -48,13 +50,11 @@ public class UserService {
         System.out.println(joinDto.getUserLikeAroma1());
         System.out.println(joinDto.getUserLikeAroma2());
         System.out.println(joinDto.getUserLikeAroma3());
-        System.out.println(joinDto.getRole());
-
         System.out.println(userRepository);
+
 
         try {
             User user = User.builder()
-                    .userId(joinDto.getUserId())
                     .email(joinDto.getEmail())
                     .password(bCryptPasswordEncoder.encode(joinDto.getPassword())) //비밀번호 인코딩
                     .birthday(joinDto.getBirthday())
@@ -67,7 +67,8 @@ public class UserService {
                     .userLikeAroma1(joinDto.getUserLikeAroma1())
                     .userLikeAroma2(joinDto.getUserLikeAroma2())
                     .userLikeAroma3(joinDto.getUserLikeAroma3())
-                    .role(joinDto.getRole())
+
+                    .role(Role.ROLE_USER)
                     .build();
 
             userRepository.save(user);
@@ -75,5 +76,13 @@ public class UserService {
             throw new IllegalArgumentException("로그인 서비스 빌드 오류");
         }
 
+    }
+
+    public static String getCurrentMemberId() {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getName() == null) {
+            throw new RuntimeException("No authentication information.");
+        }
+        return authentication.getName();
     }
 }

@@ -14,7 +14,7 @@ public class CorsConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowCredentials(true); //내 서버가 응답할 때 json 자바스크립트 허용
+        config.setAllowCredentials(true); //내 서버가 응답할 때 json 을 자바스크립트에서 처리할 수 있게 허용
         config.addAllowedOriginPattern("*"); //포트번호 응답 다름 허용
         config.addAllowedHeader("*"); //헤더 값 응답 허용
         config.addAllowedMethod("*"); //메서드 응답 허용(get/post 등)

@@ -17,16 +17,17 @@ public class PrincipalDetailsService implements UserDetailsService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final UserRepository userRepository;
 
+    //로그인시에 DB에서 유저정보와 권한정보를 가져오게 됩니다.
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
-        logger.info("email :: {}", email);
+        logger.info("★★★★★★★★★★★★★★[ PrincipalDetailsService] ★★★★★★★★★★★★★★★★★★★★★");
+        logger.info(" 로그인 한 email :: {}", email);
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("회원 없음"));
+                .orElseThrow(() -> new IllegalArgumentException("데이터베이스에서 회원을 찾을 수 없음"));
 
-        logger.info("user :: {}", user);
+        logger.info(" 로그인 한 user :: {}", user);
         logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 
         return new PrincipalDetails(user); // SecurityContext 의 Authertication 에 등록되어 인증정보를 가진다.
