@@ -1,6 +1,7 @@
 package com.example.WineOclocK.spring.crawling;
 
 import com.example.WineOclocK.spring.domain.entity.Crawling;
+import com.google.gson.Gson;
 import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class CrawlingController {
         return crawling.toString();
     }
 
-//    private List<String> mention;   // 한달 가장 언급 많은 순위
+    //    private List<String> mention;   // 한달 가장 언급 많은 순위
 //    private List<String> access;    // 접근성 순위
 //    private List<String> present;   // 선물 순위
 //    private List<String> price;     // 가성비 순위

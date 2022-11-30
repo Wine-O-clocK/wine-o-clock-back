@@ -1,6 +1,7 @@
 package com.example.WineOclocK.spring.domain.entity;
 
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,9 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Getter
 @NoArgsConstructor
-@Entity
+@Data
 public class Wine {
 
     @Id
