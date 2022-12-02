@@ -38,7 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override //인증을 무시할 경로 설정
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/css/**", "/js/**", "/img/**");
+        web.ignoring().antMatchers("/css/**", "/js/**", "/img/**", "/**");
     }
 
     @Override // http 관련 인증 설정
@@ -58,7 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                     // 모두 접근 가능한 URL
-                    .antMatchers("/","/login/oauth2","/login", "/join", "/user", "/test").permitAll()
+                    .antMatchers("/**","/login/oauth2","/login", "/join", "/user", "/test").permitAll()
                     // USER 만 접근 가능한 URL
                     .antMatchers("/test/user").access("hasRole('ROLE_USER')")
                     // ADMIN 만 접근 가능한 URL
