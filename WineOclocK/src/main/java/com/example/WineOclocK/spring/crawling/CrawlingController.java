@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,9 +22,9 @@ public class CrawlingController {
 //        return crawling.toString();
 //    }
     @GetMapping("/crawling")
-    public String jsonSave() throws ParseException, IOException {
+    public Map<String, Object> jsonSave() throws ParseException, IOException {
         crawlingService.parsingJson();
-        return "파싱한 정보 저장 완료";
+        return crawlingService.createResponse();
     }
 
 //    private List<String> mention;   // 한달 가장 언급 많은 순위

@@ -20,8 +20,13 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +36,16 @@ public class CrawlingService {
     private final PresentRepository presentRepository;
     private final PriceRepository priceRepository;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    //매달 초기화 진행 후 저장
+    @PostConstruct
+    public void init() {
+        accessRepository.deleteAll();
+        mentionRepository.deleteAll();
+        presentRepository.deleteAll();
+        priceRepository.deleteAll();
+    }
+
     // json 파싱하기
     @Transactional
     public void parsingJson() throws ParseException, IOException {
@@ -62,7 +77,7 @@ public class CrawlingService {
                     .build();
             mentionRepository.save(mention);
         }
-        logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
+        logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 
         logger.info("★★★★★★★★★★★★★★★ ACCESS ★★★★★★★★★★★★★★★");
         for (Object object : accessArr) {
@@ -78,7 +93,7 @@ public class CrawlingService {
                     .build();
             Access accessResult = accessRepository.save(access);
         }
-        logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
+        logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 
         logger.info("★★★★★★★★★★★★★★★ PRESENT ★★★★★★★★★★★★★★★");
         for (Object object : presentArr) {
@@ -94,9 +109,9 @@ public class CrawlingService {
                     .build();
             presentRepository.save(present);
         }
-        logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
+        logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 
-        logger.info("★★★★ ACCESS :: 순위 예상 - 다다, 미래, 퓨메, 도스, 도스 ★★★★★");
+        logger.info("★★★★★★★★★★★★★★★★ Price ★★★★★★★★★★★★★★★★");
         for (Object object : priceArr) {
             json = (JSONObject) object;
             Price price = Price.builder()
@@ -110,36 +125,26 @@ public class CrawlingService {
                     .build();
             Price priceResult = priceRepository.save(price);
         }
-        logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
+        logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 
-        String SUCCESS_MENTION = "data.json -> db 저장 성공!";
+        logger.info("data.json -> db 저장 성공!");
+
+        //String SUCCESS_MENTION = "data.json -> db 저장 성공!";
     }
 
-    //함수 만들려다 실패
-//    private Object setJsonDto(Object object, Object classObj) {
-//        logger.info("★★★★★★★★★★★★★★ Mention :: 순위 예상 - 다다, 미래, 퓨메, 도스, 도스 ★★★★★★★★★★★★★★★★★★★★★");
-//        JSONObject json = (JSONObject) object;
-//
-//        String wineImg = (String) json.get("wineImage");
-//        String wineName = (String) json.get("wineName");
-//        String wineNameEng = (String) json.get("wineNameEng");;
-//        String wineType = (String) json.get("wineType");
-//        int wineSweet = Integer.parseInt(String.valueOf(json.get("wineSweet"))) ;
-//        int wineBody = Integer.parseInt(String.valueOf(json.get("wineBody")));
-//        String wineVariety = (String) json.get("wineVariety");
-//
-//        Access access = Access.builder()
-//                .wineImg(wineImg)
-//                .wineName(wineName)
-//                .wineNameEng(wineNameEng)
-//                .wineType(wineType)
-//                .wineSweet(wineSweet)
-//                .wineBody(wineBody)
-//                .wineVariety(wineVariety)
-//                .build();
-//        logger.info("data.json :: {}", acc.getWineName());
-//        logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
-//        return classObj;
-//    }
+    public Map<String, Object> createResponse() {
 
+        List<Access> accessList = accessRepository.findAll();
+        List<Mention> mentionList = mentionRepository.findAll();
+        List<Present> presentList = presentRepository.findAll();
+        List<Price> priceList = priceRepository.findAll();
+
+        Map<String, Object> crawlingResponse = new HashMap<>();
+        crawlingResponse.put("access", accessList);
+        crawlingResponse.put("mention", mentionList);
+        crawlingResponse.put("present", presentList);
+        crawlingResponse.put("price", priceList);
+
+        return crawlingResponse;
+    }
 }
