@@ -18,8 +18,8 @@ public class Wine {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long wineId;
 
-    private String wineName;
     private String wineImg;
+    private String wineName;
     private String wineNameEng;
     private String wineType; //와인 종류 (레드, 화이트, 로제, 스파클링)
 

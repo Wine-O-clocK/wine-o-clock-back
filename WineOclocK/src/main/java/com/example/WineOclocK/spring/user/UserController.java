@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
-@RequiredArgsConstructor
 @RestController
+@RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
