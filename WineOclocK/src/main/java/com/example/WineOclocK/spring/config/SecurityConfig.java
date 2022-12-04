@@ -38,7 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override //인증을 무시할 경로 설정
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/css/**", "/js/**", "/img/**", "/**");
+        web.ignoring().antMatchers("/css/**", "/js/**", "/img/**");
     }
 
     @Override // http 관련 인증 설정

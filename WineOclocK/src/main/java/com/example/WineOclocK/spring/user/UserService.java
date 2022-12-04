@@ -12,13 +12,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
 
+    /**
+     * 로그인
+     */
     public String login(LoginDto loginDto) {
         User user = userRepository.findByEmail(loginDto.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 이메일 입니다."));
@@ -35,23 +37,10 @@ public class UserService {
      */
     @Transactional
     public void join(JoinDto joinDto) {
-        // 이메일 중복 확인
-//        if(!userRepository.existsByEmail(joinDto.getEmail())){
-//            throw new IllegalArgumentException("이미 존재하는 이메일 입니다");
-//        }
-
-        System.out.println(joinDto.getEmail());
-        System.out.println(joinDto.getPassword());
-        System.out.println(joinDto.getBirthday());
-        System.out.println(joinDto.getUsername());
-
-        System.out.println(joinDto.getUserLikeType());
-        System.out.println(joinDto.getUserLikeSweet());
-        System.out.println(joinDto.getUserLikeAroma1());
-        System.out.println(joinDto.getUserLikeAroma2());
-        System.out.println(joinDto.getUserLikeAroma3());
-        System.out.println(userRepository);
-
+        //이메일 중복 확인
+        if(!userRepository.existsByEmail(joinDto.getEmail())){
+            throw new IllegalArgumentException("이미 존재하는 이메일 입니다");
+        }
 
         try {
             User user = User.builder()
@@ -73,9 +62,8 @@ public class UserService {
 
             userRepository.save(user);
         } catch (Exception exception) {
-            throw new IllegalArgumentException("로그인 서비스 빌드 오류");
+            throw new IllegalArgumentException("회원가입 서비스 빌드 오류");
         }
-
     }
 
     public static String getCurrentMemberId() {
@@ -86,3 +74,17 @@ public class UserService {
         return authentication.getName();
     }
 }
+
+//
+//        System.out.println(joinDto.getEmail());
+//        System.out.println(joinDto.getPassword());
+//        System.out.println(joinDto.getBirthday());
+//        System.out.println(joinDto.getUsername());
+//
+//        System.out.println(joinDto.getUserLikeType());
+//        System.out.println(joinDto.getUserLikeSweet());
+//        System.out.println(joinDto.getUserLikeAroma1());
+//        System.out.println(joinDto.getUserLikeAroma2());
+//        System.out.println(joinDto.getUserLikeAroma3());
+//        System.out.println(userRepository);
+//

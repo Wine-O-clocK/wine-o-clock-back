@@ -32,11 +32,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     /**
      *  /login request 요청시 수행되는 메서드
      *  Authentication 객체 만들어서 리턴 => 의존 : AuthenticationManager
-     * @param request from which to extract parameters and perform the authentication
-     * @param response the response, which may be needed if the implementation has to do a
-     * redirect as part of a multi-stage authentication process (such as OpenID).
-     * @return
-     * @throws AuthenticationException
      */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
@@ -80,20 +75,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication( HttpServletRequest request, HttpServletResponse response,
                                              FilterChain chain, Authentication authResult ) throws IOException, ServletException {
-
         ObjectMapper objectMapper = new ObjectMapper();
-
         logger.info("★★★★★★★★★★★★★ [successfulAuthentication] ★★★★★★★★★★★★★★★★★★★★★★");
-
         PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
-
-        logger.debug("email :: {}", principalDetails.getUsername());
-        logger.debug("nickname :: {}", principalDetails.getNickname());
-
-        logger.debug("================ 위와 아래를 비교해보세요 ! ===============");
-
-        logger.debug("username :: {}", principalDetails.getUser().getUsername());
-        logger.debug("Email :: {}", principalDetails.getUser().getEmail());
 
         String jwtToken = JWT.create()
                 .withSubject(principalDetails.getUsername())
@@ -111,10 +95,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setContentType("application/json");
 
         Map<String, String> responseMap = new HashMap<>();
-        responseMap.put("email", principalDetails.getUser().getUsername());
-        responseMap.put("username", principalDetails.getUser().getUsername());
         responseMap.put("token", jwtToken);
         new ObjectMapper().writeValue(response.getWriter(), responseMap);
+
+
+        //responseMap.put("email", principalDetails.getUser().getUsername());
+        //responseMap.put("username", principalDetails.getUser().getUsername());
 
         //        LoginResDto loginResDto = LoginResDto.builder()
 //                .token(jwtToken)

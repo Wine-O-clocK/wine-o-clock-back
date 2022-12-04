@@ -8,10 +8,6 @@ import java.util.List;
 
 @Data
 public class JoinDto {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long userId;
-
     //(0)회원 기본 정보
     private String email; //사용자 로그인 아이디
     private String password; //사용자 패스워드
@@ -29,7 +25,4 @@ public class JoinDto {
     private String userLikeAroma1;
     private String userLikeAroma2;
     private String userLikeAroma3;
-//
-//    @Enumerated(EnumType.STRING)
-//    private Role role;
 }
