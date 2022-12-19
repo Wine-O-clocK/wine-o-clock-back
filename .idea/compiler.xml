@@ -11,10 +11,6 @@
         <module name="WineOclocK.main" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="11">
-      <module name="com.jpa.WineOclocK" target="11" />
-      <module name="com.jpa.WineOclocK.main" target="11" />
-      <module name="com.jpa.WineOclocK.test" target="11" />
-    </bytecodeTargetLevel>
+    <bytecodeTargetLevel target="11" />
   </component>
 </project>
