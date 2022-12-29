@@ -18,6 +18,11 @@ public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
 
+    public User getUser(long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("not found user with id =" + id));
+    }
+
     /**
      * 로그인
      */

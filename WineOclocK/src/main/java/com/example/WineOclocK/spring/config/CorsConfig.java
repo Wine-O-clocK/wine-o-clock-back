@@ -20,7 +20,7 @@ public class CorsConfig {
         config.addAllowedMethod("*"); //메서드 응답 허용(get/post 등)
         config.addExposedHeader("Authorization"); // temp 추가
 
-        //모든 url에 대하여 위 들을 적용시키겠다
+        //모든 url 에 대하여 위 들을 적용시키겠다
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
 
