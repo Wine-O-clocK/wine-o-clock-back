@@ -2,23 +2,26 @@ package com.example.WineOclocK.spring.wine;
 
 import com.example.WineOclocK.spring.domain.entity.Role;
 import com.example.WineOclocK.spring.domain.entity.User;
-import com.example.WineOclocK.spring.domain.entity.Wine;
 import com.example.WineOclocK.spring.user.UserService;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
-import org.springframework.data.repository.query.Param;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor //private final 붙은 변수에 자동으로 생성자 만들어줌
@@ -42,55 +45,53 @@ public class WineController {
 //    }
 
     @GetMapping("/recommend/{userId}")
-    public ResponseEntity<String> recommendAI (@PathVariable Long userId) {
-        //유저 확인 + 유저 레벨 반환
-        User user = userService.getUser(userId);
+    public ResponseEntity<String> requestToFastApi (@PathVariable Long userId) throws IOException {
 
+        //0. Header set
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON); //Json
+
+        //1. URL set & 2. Body set
+        String url;
+        Map<String, String> recommendData;
+
+        // 호출할 외부 API 를 입력 -> 각 유저 레벨 별로 다른 api 호출
+        User user = userService.getUser(userId); //유저 확인
         if (user.getRole() == Role.ROLE_USER_0) {
-            URL url = new URL("http://localhost:8080/recommend/content");
+            url = "http://127.0.0.1:8000/recommend/content";
+            recommendData = wineService.recommendContent(user);
+
         } else if (user.getRole() == Role.ROLE_USER_1) {
-            URL url = new URL("http://localhost:8080/recommend/item");
+            url = "http://127.0.0.1:8000/recommend/item";
+            recommendData = wineService.recommendContent(user);
+
         } else if (user.getRole() == Role.ROLE_USER_2) {
-            URL url = new URL("http://localhost:8080/recommend/latent");
-
+            url = "http://127.0.0.1:8000/recommend/latent";
+            recommendData = wineService.recommendContent(user);
+        } else {
+            url = "";
+            recommendData = wineService.recommendContent(user);
         }
 
-        String responseMsg = "body_text";
-        String result_txt = "";
+        JSONObject body = new JSONObject(recommendData);
 
-        try {
-            JSONObject reqParams = new JSONObject();
-            reqParams.put("body_contents1", responseMsg); // body에 들어갈 내용을 담는다.
+        // 설정한 Header + Body 를 가진 HttpEntity 객체 생성
+        HttpEntity<?> requestMessage = new HttpEntity<>(body, httpHeaders);
 
-            URL url = new URL("https://www.test.com/test/open/order/possible-check"); // 호출할 외부 API 를 입력한다.
+        // HttpEntity 로 API 서버에 Request 후 response 로 응답받기
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, requestMessage, String.class);
 
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection(); // header에 데이터 통신 방법을 지정한다.
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/json; utf-8");
+        // 응답 확인
+        System.out.println("response = " + responseEntity.getBody());
+        System.out.println("response.getHeaders() = " + responseEntity.getHeaders());
 
-            // Post인 경우 데이터를 OutputStream으로 넘겨 주겠다는 설정
-            conn.setDoOutput(true);
+//        // 결과값을 담을 객체를 생성
+//        HashMap<String, Object> resultMap = new HashMap<String, Object>();
+//        resultMap.put("statusCode", responseEntity.getStatusCodeValue()); // HTTP Status Code
+//        resultMap.put("header", responseEntity.getHeaders()); // 헤더 정보
+//        resultMap.put("body", responseEntity.getBody()); // 반환받은 실제 데이터 정보
 
-            // Request body message에 전송
-            OutputStreamWriter os = new OutputStreamWriter(conn.getOutputStream());
-            os.write(reqParams.toString());
-            os.flush();
-
-            // 응답
-            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-            JSONObject jsonObj = (JSONObject) JSONValue.parse(in.readLine());
-
-            in.close();
-            conn.disconnect();
-
-            result_txt = "response :: " + jsonObj.get("result");
-            System.out.println(result_txt);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        //return result_txt;
-
-        return new ResponseEntity<>(responseMsg, HttpStatus.OK);
+        return new ResponseEntity<>(responseEntity.getBody(), HttpStatus.OK);
     }
 }

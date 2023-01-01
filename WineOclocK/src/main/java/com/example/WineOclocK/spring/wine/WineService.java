@@ -2,14 +2,21 @@ package com.example.WineOclocK.spring.wine;
 
 import com.example.WineOclocK.spring.domain.entity.User;
 import com.example.WineOclocK.spring.user.UserRepository;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.simple.JSONObject;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -18,42 +25,43 @@ public class WineService {
 
     private UserRepository userRepository;
 
-    // 콘텐츠기반 추천 알고리즘
-    public String recommendContent(@RequestBody Long userId) throws IOException {
-        //유저 id 받기 -> DB 에서 유저 정보 가져오기 -> 배열로 결과 가져오기
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("가입하지 않은 사용자 입니다."));;
+    /**
+     * json 형식으로 fastApi 에게 보냄
+     *
+     * {
+     *   "userId": "1",
+     *   "result": " wine['wineType'] + ' ' + wine['wineSweet'] + '당도 ' + wine['wineBody'] + '바디 ' + wine['aroma1'] + ' ' + wine['aroma2'] + ' ' + wine['aroma3'] "
+     * }
+     */
 
-        ArrayList<String> userDataList = new ArrayList<>();
+    // 콘텐츠기반 추천 알고리즘 데이터 전처리
+    public Map<String, String> recommendContent(User user) throws IOException {
+
+        StringBuilder sb = new StringBuilder();
 
         //유저정보를 전처리화
-        userDataList.add(user.getUserLikeType());
-        if (user.getUserLikeSweet() == 0){ // 0 -> 단 와인을 좋아함 = 5
-            userDataList.add("5당도");
-        } else if (user.getUserLikeSweet() == 1) { //1 -> 단 와인을 싫어함 = 1
-            userDataList.add("1당도");
-        } else { //2 -> 상관없음 = 3
-            userDataList.add("3당도");
-        }
+        sb.append(user.getUserLikeType()).append(" ");
 
-        if (user.getUserLikeBody() == 0){ //0 -> 가벼운 와인 선호 = 1
-            userDataList.add("1바디");
-        } else if (user.getUserLikeBody() == 1) { //1 -> 무거운 와인 선호 = 5
-            userDataList.add("5바디");
-        } else { //2 -> 상관없음 = 3
-            userDataList.add("3바디");
-        }
+        // 와인당보 : 0 (단 와인 선호), 1(단 와인 불호), 2(상관없음)
+        if (user.getUserLikeSweet() == 0){ sb.append("5당도").append(" "); }
+        else if (user.getUserLikeSweet() == 1) { sb.append("1당도").append(" "); }
+        else { sb.append("3당도").append(" "); }
 
-        userDataList.add(user.getUserLikeAroma1());
-        userDataList.add(user.getUserLikeAroma2());
-        userDataList.add(user.getUserLikeAroma3());
+        // 와인바디 : 0 (가벼운 와인 선호), 1 (무거운 와인 선호), 2 (상관없음)
+        if (user.getUserLikeBody() == 0){ sb.append("1바디").append(" "); }
+        else if (user.getUserLikeBody() == 1) { sb.append("5바디").append(" "); }
+        else { sb.append("3바디").append(" ");; }
 
-        //파이썬 함수 진행
+        sb.append(user.getUserLikeAroma1()).append(" ");
+        sb.append(user.getUserLikeAroma2()).append(" ");
+        sb.append(user.getUserLikeAroma3()).append(" ");
 
+        Map<String, String> map = new HashMap<>();
+        map.put("userWineStr", sb.toString());
 
-        //
-        return readLines("data.json");
+        return map;
     }
+
 
 
     // recent_data.json 파일을 전부 읽어서 String 으로 반환
