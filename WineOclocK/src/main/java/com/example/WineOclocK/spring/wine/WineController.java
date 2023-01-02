@@ -55,7 +55,7 @@ public class WineController {
         String url;
         Map<String, String> recommendData;
 
-        // 호출할 외부 API 를 입력 -> 각 유저 레벨 별로 다른 api 호출
+        //3. 호출할 외부 API 를 입력 -> 각 유저 레벨 별로 다른 api 호출
         User user = userService.getUser(userId); //유저 확인
         if (user.getRole() == Role.ROLE_USER_0) {
             url = "http://127.0.0.1:8000/recommend/content";
@@ -68,11 +68,13 @@ public class WineController {
         } else if (user.getRole() == Role.ROLE_USER_2) {
             url = "http://127.0.0.1:8000/recommend/latent";
             recommendData = wineService.recommendContent(user);
+
         } else {
             url = "";
             recommendData = wineService.recommendContent(user);
         }
 
+        //4. 받은 데이터를 다시 보낼 수 있게 만듬
         JSONObject body = new JSONObject(recommendData);
 
         // 설정한 Header + Body 를 가진 HttpEntity 객체 생성
