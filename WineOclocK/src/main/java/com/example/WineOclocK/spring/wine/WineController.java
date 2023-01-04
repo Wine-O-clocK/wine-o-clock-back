@@ -3,24 +3,15 @@ package com.example.WineOclocK.spring.wine;
 import com.example.WineOclocK.spring.domain.entity.Role;
 import com.example.WineOclocK.spring.domain.entity.User;
 import com.example.WineOclocK.spring.user.UserService;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -74,7 +65,7 @@ public class WineController {
             recommendData = wineService.recommendContent(user);
         }
 
-        //4. 받은 데이터를 다시 보낼 수 있게 만듬
+        //4. 받은 데이터를 다시 보낼 수 있게 만
         JSONObject body = new JSONObject(recommendData);
 
         // 설정한 Header + Body 를 가진 HttpEntity 객체 생성

@@ -62,7 +62,7 @@ public class UserService {
                     .userLikeAroma2(joinDto.getUserLikeAroma2())
                     .userLikeAroma3(joinDto.getUserLikeAroma3())
 
-                    .role(Role.ROLE_USER)
+                    .role(Role.ROLE_USER_0) // 신규가입하자마자 등록되는 레벨
                     .build();
 
             userRepository.save(user);
