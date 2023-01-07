@@ -12,6 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -47,6 +49,15 @@ public class UserService {
             throw new IllegalArgumentException("이미 존재하는 이메일 입니다");
         }
 
+        //유저선호와인 타입 list -> str 로 변경작업
+        List<String> userLikeTypeList = joinDto.getUserLikeType();
+        StringBuilder sb = new StringBuilder();
+        for (String wineType : userLikeTypeList) {
+            sb.append(wineType).append(" ");
+        }
+        String userLikeTypeStr = sb.toString().substring(0, sb.length() - 1);
+        System.out.println("userLikeTypeStr = " + userLikeTypeStr);
+
         try {
             User user = User.builder()
                     .email(joinDto.getEmail())
@@ -54,7 +65,7 @@ public class UserService {
                     .birthday(joinDto.getBirthday())
                     .username(joinDto.getUsername())
 
-                    .userLikeType(joinDto.getUserLikeType())
+                    .userLikeType(userLikeTypeStr)
                     .userLikeSweet(joinDto.getUserLikeSweet())
                     .userLikeBody(joinDto.getUserLikeBody())
 

@@ -40,6 +40,7 @@ dependencies {
 
 	// session
 	implementation 'org.springframework.session:spring-session-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
 	//json-simple
 	implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
