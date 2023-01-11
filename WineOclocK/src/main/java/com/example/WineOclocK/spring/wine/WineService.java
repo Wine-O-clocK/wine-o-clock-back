@@ -62,8 +62,6 @@ public class WineService {
         return map;
     }
 
-
-
     // recent_data.json 파일을 전부 읽어서 String 으로 반환
     public String recommend () throws IOException {
         return readLines("recent_data.json");

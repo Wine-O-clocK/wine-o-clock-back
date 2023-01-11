@@ -45,7 +45,7 @@ public class UserService {
     @Transactional
     public void join(JoinDto joinDto) {
         //이메일 중복 확인
-        if(!userRepository.existsByEmail(joinDto.getEmail())){
+        if(userRepository.existsByEmail(joinDto.getEmail())){
             throw new IllegalArgumentException("이미 존재하는 이메일 입니다");
         }
 
@@ -56,7 +56,23 @@ public class UserService {
             sb.append(wineType).append(" ");
         }
         String userLikeTypeStr = sb.toString().substring(0, sb.length() - 1);
+
+
+        // 와인당도 : 0 (단 와인 선호), 1(단 와인 불호), 2(상관없음)
+        int userLikeSweetInt;
+        if (joinDto.getUserLikeSweet() == 0){ userLikeSweetInt = 5; }
+        else if (joinDto.getUserLikeSweet() == 1){ userLikeSweetInt = 1; }
+        else { userLikeSweetInt = 3; }
+
+        // 와인바디 : 0 (가벼운 와인 선호), 1 (무거운 와인 선호), 2 (상관없음)
+        int userLikeBodyInt;
+        if (joinDto.getUserLikeBody() == 0){ userLikeBodyInt = 1;}
+        else if (joinDto.getUserLikeBody() == 1) { userLikeBodyInt = 5; }
+        else { userLikeBodyInt = 3; }
+
         System.out.println("userLikeTypeStr = " + userLikeTypeStr);
+        System.out.println("userLikeSweetInt = " + userLikeSweetInt);
+        System.out.println("userLikeBodyInt = " + userLikeBodyInt);
 
         try {
             User user = User.builder()
@@ -66,8 +82,8 @@ public class UserService {
                     .username(joinDto.getUsername())
 
                     .userLikeType(userLikeTypeStr)
-                    .userLikeSweet(joinDto.getUserLikeSweet())
-                    .userLikeBody(joinDto.getUserLikeBody())
+                    .userLikeSweet(userLikeSweetInt)
+                    .userLikeBody(userLikeBodyInt)
 
                     .userLikeAroma1(joinDto.getUserLikeAroma1())
                     .userLikeAroma2(joinDto.getUserLikeAroma2())

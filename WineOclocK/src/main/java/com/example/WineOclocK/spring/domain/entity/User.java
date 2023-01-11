@@ -30,8 +30,8 @@ public class User {
     private String birthday; //해당 생일에 달에 생일 와인 추천 (19991002)
 
     //(2)회원 와인 선호도
-    @Column(length = 30, nullable = false)
-    private String userLikeType; //레드, 화이트, 로제, 스파클링
+    @Column(length = 50, nullable = false)
+    private String userLikeType; //리스트를 받아 userService 에서 문자열 변경 ( 레드, 화이트, 로제, 스파클링 )
 
     private int userLikeSweet; // 0(단 와인 좋아함) 1(단 와인 싫어함) 2(상관없음)
     private int userLikeBody;  //0(가벼운 와인 선호) 1(무거운 와인 선호) 2(상관없음)
