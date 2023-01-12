@@ -2,14 +2,7 @@ package com.example.WineOclocK.spring.wine;
 
 import com.example.WineOclocK.spring.domain.entity.User;
 import com.example.WineOclocK.spring.user.UserRepository;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.simple.JSONObject;
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -12,6 +12,7 @@ import javax.persistence.Id;
 
 @NoArgsConstructor
 @Entity
+@Data
 public class Wine {
 
     @Id
@@ -22,7 +23,7 @@ public class Wine {
     private String wineName;
     private String wineNameEng;
     private String wineType; //와인 종류 (레드, 화이트, 로제, 스파클링)
-    private int winePrice; //와인 가격
+    private String winePrice; //와인 가격
 
     private String wineSweet; //와인 당도감 (1~5)
     private String wineBody; //와인 바디감 (1~5)
