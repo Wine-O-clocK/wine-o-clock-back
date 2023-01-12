@@ -11,25 +11,26 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @NoArgsConstructor
-@Data
+@Entity
 public class Wine {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long wineId;
 
-    private String wineImg;
+    private String wineImage;
     private String wineName;
     private String wineNameEng;
     private String wineType; //와인 종류 (레드, 화이트, 로제, 스파클링)
-
-    private int wineSweet; //와인 당도감 (1~5)
-    private int wineBody; //와인 바디감 (1~5)
-    private String wineVariety; //와인 품종
     private int winePrice; //와인 가격
-    private String wineAroma1;
-    private String wineAroma2; //null 가능
-    private String wineAroma3; //null 가능
+
+    private String wineSweet; //와인 당도감 (1~5)
+    private String wineBody; //와인 바디감 (1~5)
+    private String wineVariety; //와인 품종
+
+    private String aroma1;
+    private String aroma2; //null 가능
+    private String aroma3; //null 가능
 
 //    @Builder
 //    public Wine(String wineName, String wineImg, String wineNameEng, String wineType,
