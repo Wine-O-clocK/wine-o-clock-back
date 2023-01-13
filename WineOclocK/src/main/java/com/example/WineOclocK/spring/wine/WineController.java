@@ -2,16 +2,20 @@ package com.example.WineOclocK.spring.wine;
 
 import com.example.WineOclocK.spring.domain.entity.Role;
 import com.example.WineOclocK.spring.domain.entity.User;
+import com.example.WineOclocK.spring.domain.entity.Wine;
 import com.example.WineOclocK.spring.user.UserService;
+import com.example.WineOclocK.spring.wine.dto.SearchWineDto;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -21,8 +25,15 @@ public class WineController {
     private final WineService wineService;
     private final UserService userService;
 
+    @GetMapping("/search")
+    public List<SearchWineDto> searchWine(@RequestParam(value = "keyword", required = false, defaultValue="") String keyword) {
+        System.out.println("keyword = " + keyword);
+        List<SearchWineDto> wineList = wineService.searchWines(keyword);
+        return wineList;
+    }
+
     @GetMapping("/recommend/{userId}")
-    public ResponseEntity<String> requestToFastApi (@PathVariable Long userId) throws IOException {
+    public ResponseEntity<String> requestToFlask (@PathVariable Long userId) throws IOException {
 
         //0. Header set
         HttpHeaders httpHeaders = new HttpHeaders();
