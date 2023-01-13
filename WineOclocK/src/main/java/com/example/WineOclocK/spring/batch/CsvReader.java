@@ -1,7 +1,6 @@
 package com.example.WineOclocK.spring.batch;
 
 import com.example.WineOclocK.spring.domain.entity.Wine;
-import com.example.WineOclocK.spring.wine.dto.WineDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;

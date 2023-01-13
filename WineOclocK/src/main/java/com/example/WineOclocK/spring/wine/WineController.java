@@ -21,20 +21,6 @@ public class WineController {
     private final WineService wineService;
     private final UserService userService;
 
-
-//    //테이블 리스트 가져오기
-//    @GetMapping("/wines")
-//    public List<Wine> list(){
-//        return wineRepository.findAll();
-//    }
-//
-//    @GetMapping("/")
-//    public String wines(Model model) {
-//        List<Wine> wines = wineRepository.findAll();
-//        model.addAttribute("wines", wines);
-//        return "basic/wines";
-//    }
-
     @GetMapping("/recommend/{userId}")
     public ResponseEntity<String> requestToFastApi (@PathVariable Long userId) throws IOException {
 
