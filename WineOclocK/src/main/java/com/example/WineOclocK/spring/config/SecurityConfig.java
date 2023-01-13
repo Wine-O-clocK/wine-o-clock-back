@@ -77,7 +77,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .oauth2Login()                                          // oauth2Login 설정 시작
                     .defaultSuccessUrl("/")			                        // 로그인 성공하면 "/" 으로 이동
-                    .failureUrl("/loginForm")		    // 로그인 실패 시 /loginForm 으로 이동
+                    .failureUrl("/")		    // 로그인 실패 시 /loginForm 으로 이동
                     .userInfoEndpoint()                                     // oauth2Login 성공 이후의 설정을 시작
                     .userService(customOAuth2UserService); // SNS 로그인이 완료된 뒤 후처리가 필요함. 엑세스토큰 + 사용자프로필 정보
 

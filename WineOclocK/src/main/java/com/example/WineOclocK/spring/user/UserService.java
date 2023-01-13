@@ -70,9 +70,18 @@ public class UserService {
         else if (joinDto.getUserLikeBody() == 1) { userLikeBodyInt = 5; }
         else { userLikeBodyInt = 3; }
 
+        System.out.println("joinDto.getEmail() = " + joinDto.getEmail());
+        System.out.println("joinDto.getPassword() = " + joinDto.getPassword());
+        System.out.println("joinDto.getBirthday() = " + joinDto.getBirthday());
+        System.out.println("joinDto.getUsername() = " + joinDto.getUsername());
+
         System.out.println("userLikeTypeStr = " + userLikeTypeStr);
         System.out.println("userLikeSweetInt = " + userLikeSweetInt);
         System.out.println("userLikeBodyInt = " + userLikeBodyInt);
+
+        System.out.println("joinDto.getUserLikeAroma1() = " + joinDto.getUserLikeAroma1());
+        System.out.println("joinDto.getUserLikeAroma2() = " + joinDto.getUserLikeAroma2());
+        System.out.println("joinDto.getUserLikeAroma3() = " + joinDto.getUserLikeAroma3());
 
         try {
             User user = User.builder()
@@ -91,7 +100,6 @@ public class UserService {
 
                     .role(Role.ROLE_USER_0) // 신규가입하자마자 등록되는 레벨
                     .build();
-
             userRepository.save(user);
         } catch (Exception exception) {
             throw new IllegalArgumentException("회원가입 서비스 빌드 오류");

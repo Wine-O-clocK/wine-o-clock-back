@@ -87,15 +87,18 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .withClaim("email", principalDetails.getUser().getEmail())
                 .sign(Algorithm.HMAC512(JwtProperties.SECRET));
 
-        logger.info("jwtToken :: {}", jwtToken);
+        //logger.info("jwtToken :: {}", jwtToken);
         logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 
         // Add token in response
         response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
         response.setContentType("application/json");
-
+        response.setCharacterEncoding("utf8");
         Map<String, String> responseMap = new HashMap<>();
         responseMap.put("token", jwtToken);
+        responseMap.put("userEmail", principalDetails.getUser().getEmail());
+        responseMap.put("username", principalDetails.getUser().getUsername());
+        responseMap.put("userId", Long.toString(principalDetails.getUser().getUserId()));
         new ObjectMapper().writeValue(response.getWriter(), responseMap);
 
 
