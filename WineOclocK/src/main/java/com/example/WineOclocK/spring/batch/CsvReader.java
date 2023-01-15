@@ -15,10 +15,12 @@ import org.springframework.core.io.ClassPathResource;
 public class CsvReader {
     @Bean
     public FlatFileItemReader<Wine> csvFileItemReader() {
+        System.out.println("--------- CsvReader.csvFileItemReader 시작합니다");
+
         /* file read */
+        System.out.println("---------------(1) wine_list.csv 파일을 읽습니다");
         FlatFileItemReader<Wine> flatFileItemReader = new FlatFileItemReader<>();
         flatFileItemReader.setResource(new ClassPathResource("/wine_list.csv"));
-
         flatFileItemReader.setLinesToSkip(1); // header line skip
         flatFileItemReader.setEncoding("UTF-8"); // encoding
 
@@ -26,22 +28,17 @@ public class CsvReader {
         DefaultLineMapper<Wine> defaultLineMapper = new DefaultLineMapper<>(); // csv 파일을 한 줄씩 읽게 하는 객체
 
         /* delimitedLineTokenizer : setNames를 통해 각각의 데이터의 이름 설정 */
+        System.out.println("---------------(2) setNames를 통해 각각의 데이터의 이름 설정합니다");
+
+        /* delimitedLineTokenizer : setNames를 통해 각각의 데이터의 이름 설정 */
         DelimitedLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer(","); //csv 파일에서 구분자 설정
-        delimitedLineTokenizer.setNames("wineImage","wineName","wineNameEng","wineType","winePrice","wineSweet",
-                "wineBody","wineVariety","aroma1","aroma2","aroma3"); // 각각의 데이터 이름 설정 - 엔티티 필드의 이름과 동일하게 설정하면 된다.
+        //delimitedLineTokenizer.setNames("image","name","name2","type","price","sweet","body","variety","aroma1","aroma2","aroma3");
+        delimitedLineTokenizer.setNames("wineImage","wineName","wineNameEng","wineType","winePrice","wineSweet","wineBody","wineVariety","aroma1","aroma2","aroma3"); // 각각의 데이터 이름 설정 - 엔티티 필드의 이름과 동일하게 설정하면 된다.
         delimitedLineTokenizer.setStrict(false); // csv 파일의 컬럼과 불일치 허용
         defaultLineMapper.setLineTokenizer(delimitedLineTokenizer);
 
-//        defaultLineMapper.setFieldSetMapper(fieldSet -> {
-//            String wineImage = fieldSet.readString("wineImage");
-//            int id = fieldSet.readInt("id");
-//            String name = fieldSet.readString("name");
-//            String address = fieldSet.readString("address");
-//
-//            return new WineDto(wineImage, wineImage, wineImage,);
-//        });
-
         /* beanWrapperFieldSetMapper : Tokenizer에서 가지고온 데이터들을 VO로 바인드하는 역할 */
+        System.out.println("---------------(3) Tokenizer에서 가지고온 데이터들을 VO로 바인드합니다");
         BeanWrapperFieldSetMapper<Wine> beanWrapperFieldSetMapper = new BeanWrapperFieldSetMapper<>();
         beanWrapperFieldSetMapper.setTargetType(Wine.class);
 
@@ -49,6 +46,8 @@ public class CsvReader {
 
         /* lineMapper 지정 */
         flatFileItemReader.setLineMapper(defaultLineMapper);
+
+        System.out.println("--------- CsvReader.csvFileItemReader 종료합니다");
 
         return flatFileItemReader;
     }

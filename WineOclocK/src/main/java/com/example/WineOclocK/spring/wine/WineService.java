@@ -4,21 +4,22 @@ import com.example.WineOclocK.spring.domain.entity.User;
 import com.example.WineOclocK.spring.domain.entity.Wine;
 import com.example.WineOclocK.spring.user.UserRepository;
 import com.example.WineOclocK.spring.wine.dto.SearchWineDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class WineService {
 
-    private WineRepository wineRepository;
-    private UserRepository userRepository;
+    private final WineRepository wineRepository;
+    private final UserRepository userRepository;
 
     /**
      * json 형식으로 fastApi 에게 보냄
@@ -58,17 +59,9 @@ public class WineService {
 
     @Transactional
     public List<SearchWineDto> searchWines (String keyword){
-        Wine wineTest = wineRepository.findByWineName("낙낙 레드 블랜드")
-                .orElseThrow(() -> new IllegalArgumentException("없는 와인 입니다."));
-
-        System.out.println("wineTest = " + wineTest.getWineName());
-
-        System.out.println(keyword + "와인을 찾아봅시다");
+        System.out.println("--------- wineSearch 시작 : " + keyword + "와인을 검색합니다");
 
         List<Wine> wines = wineRepository.findByWineNameContaining(keyword);
-        System.out.println("wines = " + wines);
-        System.out.println("와인을 못찾았습니다");
-
         List<SearchWineDto> wineDtoList = new ArrayList<>();
 
         if(wines.isEmpty()) {
@@ -83,6 +76,21 @@ public class WineService {
     }
 
     public SearchWineDto convertEntityToDto(Wine wine){
+
+//        return SearchWineDto.builder()
+//                .wineName(wine.getName())
+//                .wineNameEng(wine.getName2())
+//                .wineImage(wine.getImage())
+//                .wineType(wine.getType())
+//                .winePrice(wine.getPrice())
+//                .wineVariety(wine.getVariety())
+//                .wineSweet(wine.getSweet())
+//                .wineBody(wine.getBody())
+//                .aroma1(wine.getAroma1())
+//                .aroma2(wine.getAroma2())
+//                .aroma3(wine.getAroma3()).
+//                build();
+
         return SearchWineDto.builder()
                 .wineName(wine.getWineName())
                 .wineNameEng(wine.getWineNameEng())
