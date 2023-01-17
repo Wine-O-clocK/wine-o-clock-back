@@ -1,13 +1,7 @@
 package com.example.WineOclocK.spring.crawling;
 
-import com.example.WineOclocK.spring.crawling.repository.AccessRepository;
-import com.example.WineOclocK.spring.crawling.repository.MentionRepository;
-import com.example.WineOclocK.spring.crawling.repository.PresentRepository;
-import com.example.WineOclocK.spring.crawling.repository.PriceRepository;
-import com.example.WineOclocK.spring.crawling.response.Access;
-import com.example.WineOclocK.spring.crawling.response.Mention;
-import com.example.WineOclocK.spring.crawling.response.Present;
-import com.example.WineOclocK.spring.crawling.response.Price;
+import com.example.WineOclocK.spring.crawling.repository.*;
+import com.example.WineOclocK.spring.crawling.response.*;
 import com.example.WineOclocK.spring.domain.entity.Wine;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
@@ -21,8 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +31,7 @@ public class CrawlingService {
     private final MentionRepository mentionRepository;
     private final PresentRepository presentRepository;
     private final PriceRepository priceRepository;
+    private final RecentRepository recentRepository;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     //매달 초기화 진행 후 저장
@@ -44,6 +41,7 @@ public class CrawlingService {
         mentionRepository.deleteAll();
         presentRepository.deleteAll();
         priceRepository.deleteAll();
+        recentRepository.deleteAll();
     }
 
     // json 파싱하기
@@ -127,6 +125,28 @@ public class CrawlingService {
         }
         logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 
+        // 최신 로컬 제이슨 파일 읽기
+        resource = new ClassPathResource("recent_data.json");
+        JSONArray recentArr = (JSONArray) new JSONParser().parse(new InputStreamReader(resource.getInputStream(), "UTF-8"));
+
+        // jsonArr에서 하나씩 JSONObject로 cast해서 사용
+        logger.info("★★★★★★★★★★★★★★★ RECENT ★★★★★★★★★★★★★★★");
+        if (recentArr.size() > 0){
+            for(int i=0; i<recentArr.size(); i++){
+                json = (JSONObject)recentArr.get(i);
+                Recent recent = Recent.builder()
+                        .wineImg((String) json.get("wineImage"))
+                        .wineName((String) json.get("wineName"))
+                        .wineNameEng((String) json.get("wineNameEng"))
+                        .wineType((String) json.get("wineType"))
+                        .wineSweet(Integer.parseInt(String.valueOf(json.get("wineSweet"))))
+                        .wineBody(Integer.parseInt(String.valueOf(json.get("wineBody"))))
+                        .wineVariety((String) json.get("wineVariety"))
+                        .build();
+                recentRepository.save(recent);
+            }
+        }
+        logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
         logger.info("data.json -> db 저장 성공!");
 
         //String SUCCESS_MENTION = "data.json -> db 저장 성공!";
@@ -138,12 +158,14 @@ public class CrawlingService {
         List<Mention> mentionList = mentionRepository.findAll();
         List<Present> presentList = presentRepository.findAll();
         List<Price> priceList = priceRepository.findAll();
+        List<Recent> recentList =  recentRepository.findAll();
 
         Map<String, Object> crawlingResponse = new HashMap<>();
         crawlingResponse.put("access", accessList);
         crawlingResponse.put("mention", mentionList);
         crawlingResponse.put("present", presentList);
         crawlingResponse.put("price", priceList);
+        crawlingResponse.put("recent", recentList);
 
         return crawlingResponse;
     }
