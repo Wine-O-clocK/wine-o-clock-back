@@ -3,9 +3,11 @@ package com.example.WineOclocK.spring.wine;
 import com.example.WineOclocK.spring.domain.entity.User;
 import com.example.WineOclocK.spring.domain.entity.Wine;
 import com.example.WineOclocK.spring.user.UserRepository;
+import com.example.WineOclocK.spring.wine.dto.SearchReqDto;
 import com.example.WineOclocK.spring.wine.dto.SearchWineDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.transaction.Transactional;
 import java.io.BufferedReader;
@@ -77,20 +79,6 @@ public class WineService {
 
     public SearchWineDto convertEntityToDto(Wine wine){
 
-//        return SearchWineDto.builder()
-//                .wineName(wine.getName())
-//                .wineNameEng(wine.getName2())
-//                .wineImage(wine.getImage())
-//                .wineType(wine.getType())
-//                .winePrice(wine.getPrice())
-//                .wineVariety(wine.getVariety())
-//                .wineSweet(wine.getSweet())
-//                .wineBody(wine.getBody())
-//                .aroma1(wine.getAroma1())
-//                .aroma2(wine.getAroma2())
-//                .aroma3(wine.getAroma3()).
-//                build();
-
         return SearchWineDto.builder()
                 .wineName(wine.getWineName())
                 .wineNameEng(wine.getWineNameEng())
@@ -105,6 +93,18 @@ public class WineService {
                 .aroma3(wine.getAroma3()).
                 build();
     }
+
+//    public List<Wine> searchByFiltering(SearchReqDto searchReqDto) {
+//        Map<String, Object> searchKeys = new HashMap<>();
+//
+//        if (searchReqDto.getType() != null) searchKeys.put("type", searchReqDto.getType());
+//        if (searchReqDto.getPrice() != 0) searchKeys.put("price", searchReqDto.getPrice());
+//        if (searchReqDto.getAroma() != null) searchKeys.put("aroma", searchReqDto.getAroma());
+//
+//        return wineRepository.findAll(WineSpecification.searchWine(searchKeys))
+//                .stream().map(l -> new SearchReqDto((Wine) l))
+//                .collect(Collectors.toList());
+//    }
 
     // recent_data.json 파일을 전부 읽어서 String 으로 반환
     public String recommend () throws IOException {

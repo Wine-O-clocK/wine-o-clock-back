@@ -4,14 +4,12 @@ import com.example.WineOclocK.spring.domain.entity.Role;
 import com.example.WineOclocK.spring.domain.entity.User;
 import com.example.WineOclocK.spring.domain.entity.Wine;
 import com.example.WineOclocK.spring.user.UserService;
+import com.example.WineOclocK.spring.wine.dto.SearchReqDto;
 import com.example.WineOclocK.spring.wine.dto.SearchWineDto;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.springframework.http.*;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -32,6 +30,11 @@ public class WineController {
         System.out.println("--------- wineSearch 성공");
         return wineList;
     }
+
+//    @GetMapping("/search/filtering")
+//    public List<SearchWineDto> searchFiltering(@RequestBody SearchReqDto searchReqDto) {
+//        return wineService.searchByFiltering(searchReqDto);
+//    }
 
     @GetMapping("/recommend/{userId}")
     public ResponseEntity<String> requestToFlask (@PathVariable Long userId) throws IOException {
