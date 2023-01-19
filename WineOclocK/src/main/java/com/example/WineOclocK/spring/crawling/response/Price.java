@@ -17,7 +17,7 @@ public class Price {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long priceId;
 
-    private String wineImg;
+    private String wineImage;
     private String wineName;
     private String wineNameEng;
     private String wineType;

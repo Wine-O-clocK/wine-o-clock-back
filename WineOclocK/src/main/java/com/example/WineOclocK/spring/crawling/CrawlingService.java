@@ -65,7 +65,7 @@ public class CrawlingService {
         for (Object object : mentionArr) {
             json = (JSONObject) object;
             Mention mention = Mention.builder()
-                    .wineImg((String) json.get("wineImage"))
+                    .wineImage((String) json.get("wineImage"))
                     .wineName((String) json.get("wineName"))
                     .wineNameEng((String) json.get("wineNameEng"))
                     .wineType((String) json.get("wineType"))
@@ -81,7 +81,7 @@ public class CrawlingService {
         for (Object object : accessArr) {
             json = (JSONObject) object;
             Access access = Access.builder()
-                    .wineImg((String) json.get("wineImage"))
+                    .wineImage((String) json.get("wineImage"))
                     .wineName((String) json.get("wineName"))
                     .wineNameEng((String) json.get("wineNameEng"))
                     .wineType((String) json.get("wineType"))
@@ -97,7 +97,7 @@ public class CrawlingService {
         for (Object object : presentArr) {
             json = (JSONObject) object;
             Present present = Present.builder()
-                    .wineImg((String) json.get("wineImage"))
+                    .wineImage((String) json.get("wineImage"))
                     .wineName((String) json.get("wineName"))
                     .wineNameEng((String) json.get("wineNameEng"))
                     .wineType((String) json.get("wineType"))
@@ -113,7 +113,7 @@ public class CrawlingService {
         for (Object object : priceArr) {
             json = (JSONObject) object;
             Price price = Price.builder()
-                    .wineImg((String) json.get("wineImage"))
+                    .wineImage((String) json.get("wineImage"))
                     .wineName((String) json.get("wineName"))
                     .wineNameEng((String) json.get("wineNameEng"))
                     .wineType((String) json.get("wineType"))
@@ -135,7 +135,7 @@ public class CrawlingService {
             for(int i=0; i<recentArr.size(); i++){
                 json = (JSONObject)recentArr.get(i);
                 Recent recent = Recent.builder()
-                        .wineImg((String) json.get("wineImage"))
+                        .wineImage((String) json.get("wineImage"))
                         .wineName((String) json.get("wineName"))
                         .wineNameEng((String) json.get("wineNameEng"))
                         .wineType((String) json.get("wineType"))

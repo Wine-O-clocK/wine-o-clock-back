@@ -18,9 +18,9 @@ import javax.persistence.Id;
 public class Recent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long priceId;
+    Long recentId;
 
-    private String wineImg;
+    private String wineImage;
     private String wineName;
     private String wineNameEng;
     private String wineType;

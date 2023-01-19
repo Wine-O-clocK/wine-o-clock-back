@@ -19,7 +19,7 @@ public class Access{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long AccessId;
 
-    private String wineImg;
+    private String wineImage;
     private String wineName;
     private String wineNameEng;
     private String wineType;

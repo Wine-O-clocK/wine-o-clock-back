@@ -20,7 +20,7 @@ public class Mention{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long MentionId;
 
-    private String wineImg;
+    private String wineImage;
     private String wineName;
     private String wineNameEng;
     private String wineType;
