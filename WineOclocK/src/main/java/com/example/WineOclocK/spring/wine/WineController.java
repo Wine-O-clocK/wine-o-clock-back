@@ -24,17 +24,17 @@ public class WineController {
     private final UserService userService;
 
     @GetMapping("/search")
-    public List<SearchWineDto> searchWine(@RequestParam(value = "keyword", required = false, defaultValue="") String keyword) {
+    public List<SearchWineDto> searchKeyword(@RequestParam(value = "keyword", required = false, defaultValue="") String keyword) {
         //System.out.println("keyword = " + keyword);
         List<SearchWineDto> wineList = wineService.searchWines(keyword);
         System.out.println("--------- wineSearch 성공");
         return wineList;
     }
 
-//    @GetMapping("/search/filtering")
-//    public List<SearchWineDto> searchFiltering(@RequestBody SearchReqDto searchReqDto) {
-//        return wineService.searchByFiltering(searchReqDto);
-//    }
+    @GetMapping("/search/filtering")
+    public List<SearchWineDto> searchFiltering(@RequestBody SearchReqDto searchReqDto) {
+        return wineService.searchByFiltering(searchReqDto);
+    }
 
     @GetMapping("/recommend/{userId}")
     public ResponseEntity<String> requestToFlask (@PathVariable Long userId) throws IOException {

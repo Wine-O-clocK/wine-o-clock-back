@@ -94,31 +94,15 @@ public class WineService {
                 build();
     }
 
-//    public List<Wine> searchByFiltering(SearchReqDto searchReqDto) {
-//        Map<String, Object> searchKeys = new HashMap<>();
-//
-//        if (searchReqDto.getType() != null) searchKeys.put("type", searchReqDto.getType());
-//        if (searchReqDto.getPrice() != 0) searchKeys.put("price", searchReqDto.getPrice());
-//        if (searchReqDto.getAroma() != null) searchKeys.put("aroma", searchReqDto.getAroma());
-//
-//        return wineRepository.findAll(WineSpecification.searchWine(searchKeys))
-//                .stream().map(l -> new SearchReqDto((Wine) l))
-//                .collect(Collectors.toList());
-//    }
+    public List<Wine> searchByFiltering(SearchReqDto searchReqDto) {
+        Map<String, Object> searchKeys = new HashMap<>();
 
-    // recent_data.json 파일을 전부 읽어서 String 으로 반환
-    public String recommend () throws IOException {
-        return readLines("recent_data.json");
-    }
+        if (searchReqDto.getType() != null) searchKeys.put("type", searchReqDto.getType());
+        if (searchReqDto.getPrice() != 0) searchKeys.put("price", searchReqDto.getPrice());
+        if (searchReqDto.getAroma() != null) searchKeys.put("aroma", searchReqDto.getAroma());
 
-    // fileName 의 파일 내용을 전부 String 으로 읽어서 반환
-    private String readLines(String fileName) {
-        return new BufferedReader(
-                new InputStreamReader(
-                        // 지정한 fileName 을 resources 디렉토리에서 읽어 옴
-                        Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream(fileName))
-                        //this.getClass().getClassLoader().getResourceAsStream(fileName)
-                )
-        ).lines().collect(Collectors.joining());
+        return wineRepository.findAll(WineSpecification.searchWine(searchKeys))
+                .stream().map(l -> new SearchReqDto((Wine) l))
+                .collect(Collectors.toList());
     }
 }
