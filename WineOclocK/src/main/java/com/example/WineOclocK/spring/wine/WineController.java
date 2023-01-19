@@ -25,7 +25,6 @@ public class WineController {
 
     @GetMapping("/search")
     public List<SearchWineDto> searchKeyword(@RequestParam(value = "keyword", required = false, defaultValue="") String keyword) {
-        //System.out.println("keyword = " + keyword);
         List<SearchWineDto> wineList = wineService.searchWines(keyword);
         System.out.println("--------- wineSearch 성공");
         return wineList;

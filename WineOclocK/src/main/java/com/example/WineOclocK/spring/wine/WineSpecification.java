@@ -15,7 +15,7 @@ public class WineSpecification {
 
     public static Specification<Wine> equalWinePrice(int price) {
         // entity 의 "winePrice" 필드가 파라메터 "price"인 요소 선택
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("winePrice"), price);
+        return (root, query, criteriaBuilder) -> criteriaBuilder.between(root.get("winePrice"), 0, price);
     }
 
     public static Specification<Wine> equalAroma1(String aroma) {
@@ -29,14 +29,4 @@ public class WineSpecification {
     public static Specification<Wine> equalAroma3(String aroma) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("aroma3"), aroma);
     }
-
-//    public static Specification<Wine> searchWine(Map<String, Object> searchKey){
-//        return ((root, query, criteriaBuilder) -> {
-//            List<Predicate> predicates = new ArrayList<>();
-//            for(String key : searchKey.keySet()){
-//                predicates.add(criteriaBuilder.equal(root.get(key), searchKey.get(key)));
-//            }
-//            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-//        });
-//    }
 }

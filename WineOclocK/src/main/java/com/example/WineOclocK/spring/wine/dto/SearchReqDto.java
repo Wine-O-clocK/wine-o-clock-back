@@ -11,5 +11,7 @@ public class SearchReqDto {
     private String type;
     private int price;
 
-    private ArrayList<String> aroma;
+    private String aroma1;
+    private String aroma2;
+    private String aroma3;
 }

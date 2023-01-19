@@ -6,9 +6,14 @@ import com.example.WineOclocK.spring.user.UserRepository;
 import com.example.WineOclocK.spring.wine.dto.SearchReqDto;
 import com.example.WineOclocK.spring.wine.dto.SearchWineDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -94,15 +99,42 @@ public class WineService {
                 build();
     }
 
-    public List<Wine> searchByFiltering(SearchReqDto searchReqDto) {
-        Map<String, Object> searchKeys = new HashMap<>();
+    public List<SearchWineDto> searchByFiltering(SearchReqDto searchReqDto) {
+        Specification<Wine> spec = (root, query, criteriaBuilder) -> null;
 
-        if (searchReqDto.getType() != null) searchKeys.put("type", searchReqDto.getType());
-        if (searchReqDto.getPrice() != 0) searchKeys.put("price", searchReqDto.getPrice());
-        if (searchReqDto.getAroma() != null) searchKeys.put("aroma", searchReqDto.getAroma());
+        //ex. 아로마 -> '사과', '베리', null
+        // 사과결과 -> 아로마1='사과' or 아로마2='사과' or 아로마3='사과'
+        // 베리결과 -> 아로마1='베리' or 아로마2='베리' or 아로마3='베리'
+        // 아로마결과 -> 사과결과 or 베리결과
+        if (searchReqDto.getAroma1() != null) {
+            spec = spec.or(WineSpecification.equalAroma1(searchReqDto.getAroma1()));
+            spec = spec.or(WineSpecification.equalAroma2(searchReqDto.getAroma1()));
+            spec = spec.or(WineSpecification.equalAroma3(searchReqDto.getAroma1()));
+        }
+        if (searchReqDto.getAroma2() != null){
+            spec = spec.or(WineSpecification.equalAroma1(searchReqDto.getAroma2()));
+            spec = spec.or(WineSpecification.equalAroma2(searchReqDto.getAroma2()));
+            spec = spec.or(WineSpecification.equalAroma3(searchReqDto.getAroma2()));
+        }
+        if (searchReqDto.getAroma3() != null){
+            spec = spec.or(WineSpecification.equalAroma1(searchReqDto.getAroma3()));
+            spec = spec.or(WineSpecification.equalAroma2(searchReqDto.getAroma3()));
+            spec = spec.or(WineSpecification.equalAroma3(searchReqDto.getAroma3()));
+        }
+        if (searchReqDto.getType() != null) spec = spec.and(WineSpecification.equalWineType(searchReqDto.getType()));
+        if (searchReqDto.getPrice() != 0) spec = spec.and(WineSpecification.equalWinePrice(searchReqDto.getPrice()));
 
-        return wineRepository.findAll(WineSpecification.searchWine(searchKeys))
-                .stream().map(l -> new SearchReqDto((Wine) l))
-                .collect(Collectors.toList());
+        List<Wine> wines = wineRepository.findAll(spec);
+        List<SearchWineDto> wineDtoList = new ArrayList<>();
+
+        if(wines.isEmpty()) {
+            System.out.println("와인이 없습니다");
+            return wineDtoList;
+        }
+
+        for(Wine wine : wines) {
+            wineDtoList.add(this.convertEntityToDto(wine));
+        }
+        return wineDtoList;
     }
 }
