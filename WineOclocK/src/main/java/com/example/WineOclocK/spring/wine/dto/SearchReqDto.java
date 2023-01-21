@@ -2,11 +2,12 @@ package com.example.WineOclocK.spring.wine.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 
 @Data
-@Builder
+@NoArgsConstructor
 public class SearchReqDto {
     private String type;
     private int price;
