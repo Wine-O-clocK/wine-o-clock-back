@@ -38,9 +38,13 @@ public class WineController {
     @GetMapping("/recommend/{userId}")
     public ResponseEntity<String> requestToFlask (@PathVariable Long userId) throws IOException {
 
+        System.out.println("---------------WineController.requestToFlask");
+
         //0. Header set
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON); //Json
+
+        System.out.println("-------헤더 세팅 완료");
 
         //1. URL set & 2. Body set
         String url;
@@ -48,16 +52,17 @@ public class WineController {
 
         //3. 호출할 외부 API 를 입력 -> 각 유저 레벨 별로 다른 api 호출
         User user = userService.getUser(userId); //유저 확인
+        System.out.println("-------user.getRole() = " + user.getRole());
         if (user.getRole() == Role.ROLE_USER_0) {
-            url = "http://127.0.0.1:8000/recommend/content";
+            url = "http://127.0.0.1:5000/recommend/content";
             recommendData = wineService.recommendContent(user);
 
         } else if (user.getRole() == Role.ROLE_USER_1) {
-            url = "http://127.0.0.1:8000/recommend/item";
+            url = "http://127.0.0.1:5000/recommend/item";
             recommendData = wineService.recommendContent(user);
 
         } else if (user.getRole() == Role.ROLE_USER_2) {
-            url = "http://127.0.0.1:8000/recommend/latent";
+            url = "http://127.0.0.1:5000/recommend/latent";
             recommendData = wineService.recommendContent(user);
 
         } else {
@@ -65,7 +70,10 @@ public class WineController {
             recommendData = wineService.recommendContent(user);
         }
 
-        //4. 받은 데이터를 다시 보낼 수 있게 만
+        System.out.println("-------url = " + url);
+        System.out.println("-------recommendData = " + recommendData.get("userWineStr") );
+
+        //4. 받은 데이터를 다시 보낼 수 있게 만들기
         JSONObject body = new JSONObject(recommendData);
 
         // 설정한 Header + Body 를 가진 HttpEntity 객체 생성

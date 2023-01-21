@@ -59,7 +59,7 @@ public class WineService {
         sb.append(user.getUserLikeAroma3()).append(" ");
 
         Map<String, String> map = new HashMap<>();
-        map.put("userWineStr", sb.toString());
+        System.out.println(sb.toString());
 
         return map;
     }
