@@ -71,7 +71,13 @@ public class WineController {
         }
 
         System.out.println("-------url = " + url);
-        System.out.println("-------recommendData = " + recommendData.get("userWineStr") );
+        System.out.println("-------recommendData = " + recommendData.get("userWineStr"));
+        System.out.println("-------userLikeType = " + recommendData.get("userLikeType"));
+        System.out.println("-------userLikeSweet = " + recommendData.get("userLikeSweet"));
+        System.out.println("-------userLikeBody = " + recommendData.get("userLikeBody"));
+        System.out.println("-------userLikeAroma1 = " + recommendData.get("userLikeAroma1"));
+        System.out.println("-------userLikeAroma2 = " + recommendData.get("userLikeAroma2"));
+        System.out.println("-------userLikeAroma3 = " + recommendData.get("userLikeAroma3"));
 
         //4. 받은 데이터를 다시 보낼 수 있게 만들기
         JSONObject body = new JSONObject(recommendData);

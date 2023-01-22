@@ -40,26 +40,45 @@ public class WineService {
     public Map<String, String> recommendContent(User user) throws IOException {
 
         StringBuilder sb = new StringBuilder();
+        Map<String, String> map = new HashMap<>();
 
         //유저정보를 전처리화
         sb.append(user.getUserLikeType()).append(" ");
+        map.put("userLikeType", user.getUserLikeType());
 
         // 와인당보 : 0 (단 와인 선호), 1(단 와인 불호), 2(상관없음)
-        if (user.getUserLikeSweet() == 0){ sb.append("5당도").append(" "); }
-        else if (user.getUserLikeSweet() == 1) { sb.append("1당도").append(" "); }
-        else { sb.append("3당도").append(" "); }
+        if (user.getUserLikeSweet() == 0){
+            sb.append("5당도").append(" ");
+            map.put("userLikeSweet", "5");
+        } else if (user.getUserLikeSweet() == 1) {
+            sb.append("1당도").append(" ");
+            map.put("userLikeSweet", "1");
+        } else {
+            sb.append("3당도").append(" ");
+            map.put("userLikeSweet", "3");
+        }
 
         // 와인바디 : 0 (가벼운 와인 선호), 1 (무거운 와인 선호), 2 (상관없음)
-        if (user.getUserLikeBody() == 0){ sb.append("1바디").append(" "); }
-        else if (user.getUserLikeBody() == 1) { sb.append("5바디").append(" "); }
-        else { sb.append("3바디").append(" ");; }
+        if (user.getUserLikeBody() == 0){
+            sb.append("1바디").append(" ");
+            map.put("userLikeBody", "1");
+        } else if (user.getUserLikeBody() == 1) {
+            sb.append("5바디").append(" ");
+            map.put("userLikeBody", "5");}
+        else {
+            sb.append("3바디").append(" ");
+            map.put("userLikeBody", "3");
+        }
+
+        map.put("userLikeAroma1", user.getUserLikeAroma1());
+        map.put("userLikeAroma2", user.getUserLikeAroma2());
+        map.put("userLikeAroma3", user.getUserLikeAroma3());
 
         sb.append(user.getUserLikeAroma1()).append(" ");
         sb.append(user.getUserLikeAroma2()).append(" ");
-        sb.append(user.getUserLikeAroma3()).append(" ");
+        sb.append(user.getUserLikeAroma3());
 
-        Map<String, String> map = new HashMap<>();
-        System.out.println(sb.toString());
+        map.put("userWineStr", sb.toString());
 
         return map;
     }
