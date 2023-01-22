@@ -8,12 +8,7 @@ import com.example.WineOclocK.spring.wine.dto.SearchWineDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -81,6 +76,21 @@ public class WineService {
         map.put("userWineStr", sb.toString());
 
         return map;
+    }
+
+    public List<Wine> flaskResponseParsing(String string) {
+
+        string = string.substring(1, string.length()-2); // 앞 뒤 '[', ']' 제거
+        String[] strSplit = string.split(","); // , 를 기준으로 나눔
+
+        List<Wine> wineResult = new ArrayList<>();
+
+        for(String s : strSplit) {
+            Wine wine = wineRepository.findById(Long.parseLong(s))
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 와인입니다."));
+            wineResult.add(wine);
+        }
+        return wineResult;
     }
 
     @Transactional

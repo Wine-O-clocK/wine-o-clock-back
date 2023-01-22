@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +37,7 @@ public class WineController {
     }
 
     @GetMapping("/recommend/{userId}")
-    public ResponseEntity<String> requestToFlask (@PathVariable Long userId) throws IOException {
+    public ResponseEntity<Map<String,Object>> requestToFlask (@PathVariable Long userId) throws IOException {
 
         System.out.println("---------------WineController.requestToFlask");
 
@@ -89,16 +90,14 @@ public class WineController {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, requestMessage, String.class);
 
-        // 응답 확인
-        System.out.println("response = " + responseEntity.getBody());
-        System.out.println("response.getHeaders() = " + responseEntity.getHeaders());
+        // flask response parsing
+        List<Wine> wineList = wineService.flaskResponseParsing(responseEntity.getBody());
 
-//        // 결과값을 담을 객체를 생성
-//        HashMap<String, Object> resultMap = new HashMap<String, Object>();
-//        resultMap.put("statusCode", responseEntity.getStatusCodeValue()); // HTTP Status Code
-//        resultMap.put("header", responseEntity.getHeaders()); // 헤더 정보
-//        resultMap.put("body", responseEntity.getBody()); // 반환받은 실제 데이터 정보
+        // 결과값을 담을 객체를 생성
+        HashMap<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put("statusCode", responseEntity.getStatusCodeValue()); // HTTP Status Code
+        resultMap.put("body", wineList); // 반환받은 실제 데이터 정보
 
-        return new ResponseEntity<>(responseEntity.getBody(), HttpStatus.OK);
+        return new ResponseEntity<>(resultMap, HttpStatus.OK);
     }
 }
