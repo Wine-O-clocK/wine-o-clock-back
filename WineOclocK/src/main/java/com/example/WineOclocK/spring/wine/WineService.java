@@ -1,27 +1,26 @@
 package com.example.WineOclocK.spring.wine;
 
+import com.example.WineOclocK.spring.domain.entity.Rating;
 import com.example.WineOclocK.spring.domain.entity.User;
 import com.example.WineOclocK.spring.domain.entity.Wine;
 import com.example.WineOclocK.spring.user.UserRepository;
 import com.example.WineOclocK.spring.wine.dto.SearchReqDto;
 import com.example.WineOclocK.spring.wine.dto.SearchWineDto;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.sql.OracleJoinFragment;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class WineService {
 
     private final WineRepository wineRepository;
-    private final UserRepository userRepository;
+    private final RatingRepository ratingRepository;
 
     /**
      * json 형식으로 fastApi 에게 보냄
@@ -32,10 +31,10 @@ public class WineService {
      * }
      */
     // 콘텐츠기반 추천 알고리즘 데이터 전처리
-    public Map<String, String> recommendContent(User user) throws IOException {
+    public Map<String, Object> recommendContent(User user) throws IOException {
 
         StringBuilder sb = new StringBuilder();
-        Map<String, String> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
 
         //유저정보를 전처리화
         sb.append(user.getUserLikeType()).append(" ");
@@ -74,6 +73,16 @@ public class WineService {
         sb.append(user.getUserLikeAroma3());
 
         map.put("userWineStr", sb.toString());
+
+        return map;
+    }
+
+    public Map<String, Object> recommendItem() throws IOException {
+        Map<String, Object> map = new HashMap<>();
+
+        List<Rating> ratings = ratingRepository.findAll();
+
+        map.put("ratings", ratings);
 
         return map;
     }

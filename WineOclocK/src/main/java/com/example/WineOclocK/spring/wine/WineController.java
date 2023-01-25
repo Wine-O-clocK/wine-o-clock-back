@@ -49,7 +49,7 @@ public class WineController {
 
         //1. URL set & 2. Body set
         String url;
-        Map<String, String> recommendData;
+        Map<String, Object> recommendData;
 
         //3. 호출할 외부 API 를 입력 -> 각 유저 레벨 별로 다른 api 호출
         User user = userService.getUser(userId); //유저 확인
@@ -58,9 +58,19 @@ public class WineController {
             url = "http://127.0.0.1:5000/recommend/content";
             recommendData = wineService.recommendContent(user);
 
+            System.out.println("-------url = " + url);
+            System.out.println("-------recommendData = " + recommendData.get("userWineStr"));
+            System.out.println("-------userLikeType = " + recommendData.get("userLikeType"));
+            System.out.println("-------userLikeSweet = " + recommendData.get("userLikeSweet"));
+            System.out.println("-------userLikeBody = " + recommendData.get("userLikeBody"));
+            System.out.println("-------userLikeAroma1 = " + recommendData.get("userLikeAroma1"));
+            System.out.println("-------userLikeAroma2 = " + recommendData.get("userLikeAroma2"));
+            System.out.println("-------userLikeAroma3 = " + recommendData.get("userLikeAroma3"));
+
         } else if (user.getRole() == Role.ROLE_USER_1) {
             url = "http://127.0.0.1:5000/recommend/item";
-            recommendData = wineService.recommendContent(user);
+            recommendData = wineService.recommendItem();
+            System.out.println("-------recommendData = " + recommendData.get("ratings"));
 
         } else if (user.getRole() == Role.ROLE_USER_2) {
             url = "http://127.0.0.1:5000/recommend/latent";
@@ -70,15 +80,6 @@ public class WineController {
             url = "";
             recommendData = wineService.recommendContent(user);
         }
-
-        System.out.println("-------url = " + url);
-        System.out.println("-------recommendData = " + recommendData.get("userWineStr"));
-        System.out.println("-------userLikeType = " + recommendData.get("userLikeType"));
-        System.out.println("-------userLikeSweet = " + recommendData.get("userLikeSweet"));
-        System.out.println("-------userLikeBody = " + recommendData.get("userLikeBody"));
-        System.out.println("-------userLikeAroma1 = " + recommendData.get("userLikeAroma1"));
-        System.out.println("-------userLikeAroma2 = " + recommendData.get("userLikeAroma2"));
-        System.out.println("-------userLikeAroma3 = " + recommendData.get("userLikeAroma3"));
 
         //4. 받은 데이터를 다시 보낼 수 있게 만들기
         JSONObject body = new JSONObject(recommendData);
@@ -90,13 +91,22 @@ public class WineController {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, requestMessage, String.class);
 
-        // flask response parsing
-        List<Wine> wineList = wineService.flaskResponseParsing(responseEntity.getBody());
-
         // 결과값을 담을 객체를 생성
         HashMap<String, Object> resultMap = new HashMap<String, Object>();
         resultMap.put("statusCode", responseEntity.getStatusCodeValue()); // HTTP Status Code
-        resultMap.put("body", wineList); // 반환받은 실제 데이터 정보
+
+        if (user.getRole() == Role.ROLE_USER_0) {
+            // flask response parsing인
+            List<Wine> wineList = wineService.flaskResponseParsing(responseEntity.getBody());
+            resultMap.put("body", wineList); // 반환받은 실제 데이터 정보
+        } else if (user.getRole() == Role.ROLE_USER_1) {
+            System.out.println(responseEntity.getBody());
+        } else if (user.getRole() == Role.ROLE_USER_2) {
+            System.out.println(responseEntity.getBody());
+        } else {
+
+        }
+
 
         return new ResponseEntity<>(resultMap, HttpStatus.OK);
     }
