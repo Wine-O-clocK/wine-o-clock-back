@@ -21,4 +21,10 @@ public class UserController {
         userService.join(joinDto);
         return "회원가입완료";
     }
+
+    @DeleteMapping("/mypage/{userId}")
+    public String delete(@PathVariable Long userId) {
+        userService.deleteUser(userId);
+        return "회원탈퇴완료";
+    }
 }

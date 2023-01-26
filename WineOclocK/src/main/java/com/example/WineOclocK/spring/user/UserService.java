@@ -106,6 +106,13 @@ public class UserService {
         }
     }
 
+    /**
+     * 회원탈퇴
+     */
+    public void deleteUser(Long userId) {
+        userRepository.deleteById(userId);
+    }
+
     public static String getCurrentMemberId() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getName() == null) {
@@ -115,17 +122,3 @@ public class UserService {
     }
 
 }
-
-//
-//        System.out.println(joinDto.getEmail());
-//        System.out.println(joinDto.getPassword());
-//        System.out.println(joinDto.getBirthday());
-//        System.out.println(joinDto.getUsername());
-//
-//        System.out.println(joinDto.getUserLikeType());
-//        System.out.println(joinDto.getUserLikeSweet());
-//        System.out.println(joinDto.getUserLikeAroma1());
-//        System.out.println(joinDto.getUserLikeAroma2());
-//        System.out.println(joinDto.getUserLikeAroma3());
-//        System.out.println(userRepository);
-//
