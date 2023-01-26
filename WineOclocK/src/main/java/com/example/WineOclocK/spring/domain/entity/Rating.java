@@ -7,11 +7,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Getter
-@Setter
+@AllArgsConstructor
 @NoArgsConstructor
+@Getter
 @Entity
+@Builder
 public class Rating {
+
+//  - 검색 필터링 결과 와인들 (1점)
+//  - 디테일한 와인 (2점)
+//  - 저장한 와인 (3점)
+//  - 평가하기 (4점)
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
