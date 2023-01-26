@@ -1,6 +1,5 @@
-package com.example.WineOclocK.spring.crawling.response;
+package com.example.WineOclocK.spring.crawling.entity;
 
-import com.example.WineOclocK.spring.domain.entity.Wine;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -13,17 +12,19 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Access{
-
+public class Price {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long AccessId;
-
+    private Long priceId;
     private String wineImage;
     private String wineName;
     private String wineNameEng;
     private String wineType;
+    private int winePrice;
     private int wineSweet;
     private int wineBody;
     private String wineVariety;
+    private String aroma1;
+    private String aroma2;
+    private String aroma3;
 }

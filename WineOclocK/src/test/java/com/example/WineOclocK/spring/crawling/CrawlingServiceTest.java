@@ -1,6 +1,6 @@
 package com.example.WineOclocK.spring.crawling;
 
-import com.example.WineOclocK.spring.crawling.response.Access;
+import com.example.WineOclocK.spring.crawling.entity.Access;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;

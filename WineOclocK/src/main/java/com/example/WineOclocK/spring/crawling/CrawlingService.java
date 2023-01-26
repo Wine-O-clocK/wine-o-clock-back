@@ -1,8 +1,7 @@
 package com.example.WineOclocK.spring.crawling;
 
 import com.example.WineOclocK.spring.crawling.repository.*;
-import com.example.WineOclocK.spring.crawling.response.*;
-import com.example.WineOclocK.spring.domain.entity.Wine;
+import com.example.WineOclocK.spring.crawling.entity.*;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -15,11 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,9 +65,13 @@ public class CrawlingService {
                     .wineName((String) json.get("wineName"))
                     .wineNameEng((String) json.get("wineNameEng"))
                     .wineType((String) json.get("wineType"))
+                    .winePrice(Integer.parseInt(String.valueOf(json.get("winePrice"))))
                     .wineSweet(Integer.parseInt(String.valueOf(json.get("wineSweet"))))
                     .wineBody(Integer.parseInt(String.valueOf(json.get("wineBody"))))
                     .wineVariety((String) json.get("wineVariety"))
+                    .aroma1((String) json.get(("aroma1")))
+                    .aroma2((String) json.get(("aroma2")))
+                    .aroma3((String) json.get(("aroma3")))
                     .build();
             mentionRepository.save(mention);
         }
@@ -85,11 +85,15 @@ public class CrawlingService {
                     .wineName((String) json.get("wineName"))
                     .wineNameEng((String) json.get("wineNameEng"))
                     .wineType((String) json.get("wineType"))
+                    .winePrice(Integer.parseInt(String.valueOf(json.get("winePrice"))))
                     .wineSweet(Integer.parseInt(String.valueOf(json.get("wineSweet"))))
                     .wineBody(Integer.parseInt(String.valueOf(json.get("wineBody"))))
                     .wineVariety((String) json.get("wineVariety"))
+                    .aroma1((String) json.get(("aroma1")))
+                    .aroma2((String) json.get(("aroma2")))
+                    .aroma3((String) json.get(("aroma3")))
                     .build();
-            Access accessResult = accessRepository.save(access);
+            accessRepository.save(access);
         }
         logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 
@@ -101,9 +105,13 @@ public class CrawlingService {
                     .wineName((String) json.get("wineName"))
                     .wineNameEng((String) json.get("wineNameEng"))
                     .wineType((String) json.get("wineType"))
+                    .winePrice(Integer.parseInt(String.valueOf(json.get("winePrice"))))
                     .wineSweet(Integer.parseInt(String.valueOf(json.get("wineSweet"))))
                     .wineBody(Integer.parseInt(String.valueOf(json.get("wineBody"))))
                     .wineVariety((String) json.get("wineVariety"))
+                    .aroma1((String) json.get(("aroma1")))
+                    .aroma2((String) json.get(("aroma2")))
+                    .aroma3((String) json.get(("aroma3")))
                     .build();
             presentRepository.save(present);
         }
@@ -117,11 +125,15 @@ public class CrawlingService {
                     .wineName((String) json.get("wineName"))
                     .wineNameEng((String) json.get("wineNameEng"))
                     .wineType((String) json.get("wineType"))
+                    .winePrice(Integer.parseInt(String.valueOf(json.get("winePrice"))))
                     .wineSweet(Integer.parseInt(String.valueOf(json.get("wineSweet"))))
                     .wineBody(Integer.parseInt(String.valueOf(json.get("wineBody"))))
                     .wineVariety((String) json.get("wineVariety"))
+                    .aroma1((String) json.get(("aroma1")))
+                    .aroma2((String) json.get(("aroma2")))
+                    .aroma3((String) json.get(("aroma3")))
                     .build();
-            Price priceResult = priceRepository.save(price);
+            priceRepository.save(price);
         }
         logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 
@@ -139,9 +151,13 @@ public class CrawlingService {
                         .wineName((String) json.get("wineName"))
                         .wineNameEng((String) json.get("wineNameEng"))
                         .wineType((String) json.get("wineType"))
+                        .winePrice(Integer.parseInt(String.valueOf(json.get("winePrice"))))
                         .wineSweet(Integer.parseInt(String.valueOf(json.get("wineSweet"))))
                         .wineBody(Integer.parseInt(String.valueOf(json.get("wineBody"))))
                         .wineVariety((String) json.get("wineVariety"))
+                        .aroma1((String) json.get(("aroma1")))
+                        .aroma2((String) json.get(("aroma2")))
+                        .aroma3((String) json.get(("aroma3")))
                         .build();
                 recentRepository.save(recent);
             }

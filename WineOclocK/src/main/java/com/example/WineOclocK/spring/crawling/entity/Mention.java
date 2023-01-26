@@ -1,4 +1,4 @@
-package com.example.WineOclocK.spring.crawling.response;
+package com.example.WineOclocK.spring.crawling.entity;
 
 import lombok.*;
 
@@ -13,17 +13,20 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Present {
+public class Mention{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long presentId;
-
+    private Long MentionId;
     private String wineImage;
     private String wineName;
     private String wineNameEng;
     private String wineType;
+    private int winePrice;
     private int wineSweet;
     private int wineBody;
     private String wineVariety;
+    private String aroma1;
+    private String aroma2;
+    private String aroma3;
 }
