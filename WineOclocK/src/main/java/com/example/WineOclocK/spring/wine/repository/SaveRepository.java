@@ -1,4 +1,4 @@
-package com.example.WineOclocK.spring.wine;
+package com.example.WineOclocK.spring.wine.repository;
 
 import com.example.WineOclocK.spring.domain.entity.Rating;
 import com.example.WineOclocK.spring.domain.entity.Save;
