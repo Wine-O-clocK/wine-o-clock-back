@@ -12,6 +12,7 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -26,13 +27,20 @@ public class WineController {
 
     @GetMapping("/search")
     public List<SearchWineDto> searchKeyword(@RequestParam(value = "keyword", required = false, defaultValue="") String keyword) {
+        System.out.println("--------- searchKeyword");
         List<SearchWineDto> wineList = wineService.searchWines(keyword);
         System.out.println("--------- wineSearch 성공");
         return wineList;
     }
 
-    @GetMapping("/search/filtering")
+    @PostMapping("/search/filtering")
     public List<SearchWineDto> searchFiltering(@RequestBody SearchReqDto searchReqDto) {
+        System.out.println("--------- searchFiltering");
+        System.out.println("searchReqDto.getType() = " + searchReqDto.getType());
+        System.out.println("searchReqDto.getPrice() = " + searchReqDto.getPrice());
+        System.out.println("searchReqDto.getAroma1() = " + searchReqDto.getAroma1());
+        System.out.println("searchReqDto.getAroma1() = " + searchReqDto.getAroma2());
+        System.out.println("searchReqDto.getAroma1() = " + searchReqDto.getAroma3());
         return wineService.searchByFiltering(searchReqDto);
     }
 
@@ -74,7 +82,7 @@ public class WineController {
 
         } else if (user.getRole() == Role.ROLE_USER_2) {
             url = "http://127.0.0.1:5000/recommend/latent";
-            recommendData = wineService.recommendContent(user);
+            recommendData = wineService.recommendLatent(user);
 
         } else {
             url = "";
@@ -96,7 +104,7 @@ public class WineController {
         resultMap.put("statusCode", responseEntity.getStatusCodeValue()); // HTTP Status Code
 
         if (user.getRole() == Role.ROLE_USER_0) {
-            // flask response parsing인
+            // flask response parsing
             List<Wine> wineList = wineService.flaskResponseParsing(responseEntity.getBody());
             resultMap.put("body", wineList); // 반환받은 실제 데이터 정보
         } else if (user.getRole() == Role.ROLE_USER_1) {
@@ -106,8 +114,49 @@ public class WineController {
         } else {
 
         }
-
-
         return new ResponseEntity<>(resultMap, HttpStatus.OK);
+    }
+
+    @GetMapping("/saveWine/{userId}/{wineId}")
+    public String insertSaveWine (@PathVariable Long userId, @PathVariable Long wineId) throws IOException {
+        wineService.ratingWine(userId, wineId,3);
+        return "와인 저장 완료!";
+    }
+
+    @DeleteMapping("/saveWine/{userId}/{wineId}")
+    public String deleteSaveWine (@PathVariable Long userId, @PathVariable Long wineId) throws IOException {
+        wineService.deleteSave(userId, wineId);
+        return "와인 저장 취소 완료!";
+    }
+
+    /**
+     * [보여줘야 하는 것]
+     * 와인정보 + 저장정보 + 테이스팅 노트 정보
+     */
+    @GetMapping("/detail/{wineId}")
+    public Map<String,Object> getDetail (@PathVariable Long wineId) throws IOException {
+
+        HashMap<String, Object> detailMap = new HashMap<String, Object>();
+
+        detailMap.put("wineData", "");
+        detailMap.put("wineSave", true);
+        detailMap.put("tastingNote", "");
+
+        return detailMap;
+    }
+
+    @PostMapping("/detail/{wineId}")
+    public String insertNote (@PathVariable Long wineId) throws IOException {
+        return "저장완료!";
+    }
+
+    @PutMapping("/detail/{wineId}")
+    public String updateNote (@PathVariable Long wineId) throws IOException {
+        return "수정완료!";
+    }
+
+    @DeleteMapping("/detail/{wineId}")
+    public String DeleteNote (@PathVariable Long wineId) throws IOException {
+        return "삭제완료!";
     }
 }

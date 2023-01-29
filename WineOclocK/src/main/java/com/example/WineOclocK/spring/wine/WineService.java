@@ -1,13 +1,13 @@
 package com.example.WineOclocK.spring.wine;
 
-import com.example.WineOclocK.spring.domain.entity.Rating;
-import com.example.WineOclocK.spring.domain.entity.User;
-import com.example.WineOclocK.spring.domain.entity.Wine;
-import com.example.WineOclocK.spring.user.UserRepository;
+import com.example.WineOclocK.spring.domain.entity.*;
 import com.example.WineOclocK.spring.wine.dto.SearchReqDto;
 import com.example.WineOclocK.spring.wine.dto.SearchWineDto;
+import com.example.WineOclocK.spring.wine.repository.NoteRepository;
+import com.example.WineOclocK.spring.wine.repository.RatingRepository;
+import com.example.WineOclocK.spring.wine.repository.SaveRepository;
+import com.example.WineOclocK.spring.wine.repository.WineRepository;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.sql.OracleJoinFragment;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +21,8 @@ public class WineService {
 
     private final WineRepository wineRepository;
     private final RatingRepository ratingRepository;
+    private final SaveRepository saveRepository;
+    private final NoteRepository noteRepository;
 
     /**
      * json 형식으로 fastApi 에게 보냄
@@ -79,10 +81,14 @@ public class WineService {
 
     public Map<String, Object> recommendItem() throws IOException {
         Map<String, Object> map = new HashMap<>();
-
         List<Rating> ratings = ratingRepository.findAll();
-
         map.put("ratings", ratings);
+
+        return map;
+    }
+
+    public Map<String, Object> recommendLatent(User user) {
+        Map<String, Object> map = new HashMap<>();
 
         return map;
     }
@@ -119,31 +125,18 @@ public class WineService {
         }
         return wineDtoList;
     }
-
-    public SearchWineDto convertEntityToDto(Wine wine){
-
-        return SearchWineDto.builder()
-                .wineName(wine.getWineName())
-                .wineNameEng(wine.getWineNameEng())
-                .wineImage(wine.getWineImage())
-                .wineType(wine.getWineType())
-                .winePrice(wine.getWinePrice())
-                .wineVariety(wine.getWineVariety())
-                .wineSweet(wine.getWineSweet())
-                .wineBody(wine.getWineBody())
-                .aroma1(wine.getAroma1())
-                .aroma2(wine.getAroma2())
-                .aroma3(wine.getAroma3()).
-                build();
-    }
-
+    /**
+     * 필터링 검색 기능
+     */
+    @Transactional
     public List<SearchWineDto> searchByFiltering(SearchReqDto searchReqDto) {
         Specification<Wine> spec = (root, query, criteriaBuilder) -> null;
 
-        //ex. 아로마 -> '사과', '베리', null
+        // ex. 아로마 -> '사과', '베리', null
         // 사과결과 -> 아로마1='사과' or 아로마2='사과' or 아로마3='사과'
         // 베리결과 -> 아로마1='베리' or 아로마2='베리' or 아로마3='베리'
         // 아로마결과 -> 사과결과 or 베리결과
+
         if (searchReqDto.getAroma1() != null) {
             spec = spec.or(WineSpecification.equalAroma1(searchReqDto.getAroma1()));
             spec = spec.or(WineSpecification.equalAroma2(searchReqDto.getAroma1()));
@@ -174,5 +167,90 @@ public class WineService {
             wineDtoList.add(this.convertEntityToDto(wine));
         }
         return wineDtoList;
+    }
+
+    /**
+     * Wine Dto -> wine Entity 변경
+     */
+    public SearchWineDto convertEntityToDto(Wine wine){
+
+        return SearchWineDto.builder()
+                .wineName(wine.getWineName())
+                .wineNameEng(wine.getWineNameEng())
+                .wineImage(wine.getWineImage())
+                .wineType(wine.getWineType())
+                .winePrice(wine.getWinePrice())
+                .wineVariety(wine.getWineVariety())
+                .wineSweet(wine.getWineSweet())
+                .wineBody(wine.getWineBody())
+                .aroma1(wine.getAroma1())
+                .aroma2(wine.getAroma2())
+                .aroma3(wine.getAroma3()).
+                build();
+    }
+
+    /**
+     * 와인 저장하기 기능
+     * insert -> 저장하기
+     * delete -> 저장취소
+     */
+    public void insertSave (Long userId, Long wineId) {
+        try {
+            Save save = Save.builder()
+                    .userId(userId)
+                    .wineId(wineId)
+                    .build();
+            saveRepository.save(save);
+        } catch (Exception exception) {
+            throw new IllegalArgumentException("------save build error");
+        }
+    }
+
+    public void deleteSave (Long userId, Long wineId) {
+        try {
+            saveRepository.deleteByUserIdAndWineId(userId,wineId);
+        } catch (Exception exception) {
+            throw new IllegalArgumentException("------save delete error");
+        }
+    }
+
+    /**
+     * rating 반영하기
+     */
+    public void insertRating (Long userId, Long wineId, int num) {
+        try {
+            Rating rating = Rating.builder()
+                    .userId(userId)
+                    .wineId(wineId)
+                    .rating(num)
+                    .build();
+            ratingRepository.save(rating);
+        } catch (Exception exception) {
+            throw new IllegalArgumentException("------rating build error");
+        }
+    }
+
+    /**
+     * 테이스팅 노트
+     */
+    public void insertNote(Long userId, Long wineId, String content) {
+        try {
+            Note note = Note.builder()
+                    .wineId(wineId)
+                    .userId(userId)
+                    .content(content)
+                    .build();
+            noteRepository.save(note);
+        } catch (Exception exception) {
+            throw new IllegalArgumentException("------note build error");
+        }
+    }
+
+    public void deleteNote(Long userId, Long wineId) {
+        try {
+            noteRepository.deleteByUserIdAndWineId(userId, wineId);
+        } catch (Exception exception) {
+            throw new IllegalArgumentException("------note delete error");
+        }
     }
 }
