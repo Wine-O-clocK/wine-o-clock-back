@@ -22,5 +22,6 @@ public class Note {
     private Long noteId;
     private Long userId;
     private Long wineId;
+    private int grade;
     private String content;
 }
