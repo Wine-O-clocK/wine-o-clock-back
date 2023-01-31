@@ -5,7 +5,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class noteReqDto {
-
-
+public class NoteReqDto {
+    private Long userId;
+    private Long wineId;
+    private int grade;
+    private String content;
 }
