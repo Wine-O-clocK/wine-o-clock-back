@@ -5,9 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class DetailResDto {
-
+public class DetailReqDto {
     private Long userId;
-    private boolean like;
-
+    private Long wineId;
 }

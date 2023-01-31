@@ -1,15 +1,18 @@
 package com.example.WineOclocK.spring.wine;
 
+import com.example.WineOclocK.spring.domain.entity.Note;
 import com.example.WineOclocK.spring.domain.entity.Role;
 import com.example.WineOclocK.spring.domain.entity.User;
 import com.example.WineOclocK.spring.domain.entity.Wine;
 import com.example.WineOclocK.spring.user.UserService;
+import com.example.WineOclocK.spring.wine.dto.DetailReqDto;
 import com.example.WineOclocK.spring.wine.dto.NoteReqDto;
 import com.example.WineOclocK.spring.wine.dto.SearchReqDto;
 import com.example.WineOclocK.spring.wine.dto.SearchWineDto;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.springframework.http.*;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -136,13 +139,24 @@ public class WineController {
      * 와인정보 + 저장정보 + 테이스팅 노트 정보
      */
     @GetMapping("/detail")
-    public Map<String,Object> getDetail (@PathVariable Long wineId) throws IOException {
+    public Map<String,Object> getDetail (@RequestBody DetailReqDto detailReqDto) throws IOException {
 
         HashMap<String, Object> detailMap = new HashMap<String, Object>();
 
-        detailMap.put("wineData", "");
-        detailMap.put("wineSave", true);
-        detailMap.put("tastingNote", "");
+        Wine wine = wineService.getWine(detailReqDto.getWineId());
+
+        System.out.println("---DetailReqDto = " + detailReqDto.getWineId());
+        System.out.println("---wineService.getWine = " + wine.getId());
+        System.out.println("---wineService.existSave = "+ wineService.existSave(detailReqDto.getUserId(), detailReqDto.getWineId()));
+
+        detailMap.put("wineData", wine);
+        detailMap.put("wineSave", wineService.existSave(detailReqDto.getUserId(), detailReqDto.getWineId()));
+        try {
+            Note note = wineService.getNote(detailReqDto.getUserId(), detailReqDto.getWineId());
+            detailMap.put("tastingNote", note);
+        } catch (NullPointerException e){
+            detailMap.put("tastingNote", null);
+        }
 
         return detailMap;
     }

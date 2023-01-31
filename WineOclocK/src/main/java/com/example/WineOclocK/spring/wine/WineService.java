@@ -25,6 +25,15 @@ public class WineService {
     private final SaveRepository saveRepository;
     private final NoteRepository noteRepository;
 
+    public Wine getWine (long id) {
+        return wineRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("not found wine with id =" + id));
+    }
+
+    public Note getNote (long userId, long wineId) {
+        return noteRepository.findByUserIdAndWineId(userId, wineId);
+    }
+
     /**
      * json 형식으로 fastApi 에게 보냄
      *
@@ -194,6 +203,7 @@ public class WineService {
      * 와인 저장하기 기능
      * insert -> 저장하기
      * delete -> 저장취소
+     * exist -> 여부
      */
     public void insertSave (Long userId, Long wineId) {
         try {
@@ -213,6 +223,10 @@ public class WineService {
         } catch (Exception exception) {
             throw new IllegalArgumentException("------save delete error");
         }
+    }
+
+    public boolean existSave (Long userId, Long wineId) {
+        return saveRepository.existsByUserIdAndWineId(userId, wineId);
     }
 
     /**
