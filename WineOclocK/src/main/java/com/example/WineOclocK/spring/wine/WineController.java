@@ -4,6 +4,7 @@ import com.example.WineOclocK.spring.domain.entity.Role;
 import com.example.WineOclocK.spring.domain.entity.User;
 import com.example.WineOclocK.spring.domain.entity.Wine;
 import com.example.WineOclocK.spring.user.UserService;
+import com.example.WineOclocK.spring.wine.dto.NoteReqDto;
 import com.example.WineOclocK.spring.wine.dto.SearchReqDto;
 import com.example.WineOclocK.spring.wine.dto.SearchWineDto;
 import lombok.RequiredArgsConstructor;
@@ -119,7 +120,8 @@ public class WineController {
 
     @GetMapping("/saveWine/{userId}/{wineId}")
     public String insertSaveWine (@PathVariable Long userId, @PathVariable Long wineId) throws IOException {
-        wineService.ratingWine(userId, wineId,3);
+        wineService.insertSave(userId, wineId);
+        wineService.insertRating(userId, wineId,3);
         return "와인 저장 완료!";
     }
 
@@ -133,7 +135,7 @@ public class WineController {
      * [보여줘야 하는 것]
      * 와인정보 + 저장정보 + 테이스팅 노트 정보
      */
-    @GetMapping("/detail/{wineId}")
+    @GetMapping("/detail")
     public Map<String,Object> getDetail (@PathVariable Long wineId) throws IOException {
 
         HashMap<String, Object> detailMap = new HashMap<String, Object>();
@@ -145,18 +147,20 @@ public class WineController {
         return detailMap;
     }
 
-    @PostMapping("/detail/{wineId}")
-    public String insertNote (@PathVariable Long wineId) throws IOException {
-        return "저장완료!";
+    @PostMapping("/detail")
+    public String insertNote (@RequestBody NoteReqDto noteReqDto) throws IOException {
+        wineService.insertNote(noteReqDto);
+        return "테이스팅 노트 저장완료!";
     }
 
-    @PutMapping("/detail/{wineId}")
-    public String updateNote (@PathVariable Long wineId) throws IOException {
-        return "수정완료!";
+    @PutMapping("/detail")
+    public String updateNote (@RequestBody NoteReqDto noteReqDto) throws IOException {
+        return "테이스팅 노트 수정완료!";
     }
 
-    @DeleteMapping("/detail/{wineId}")
-    public String DeleteNote (@PathVariable Long wineId) throws IOException {
-        return "삭제완료!";
+    @DeleteMapping("/detail")
+    public String DeleteNote (@RequestBody NoteReqDto noteReqDto) throws IOException {
+        wineService.deleteNote(noteReqDto);
+        return "테이스닝 노트 삭제완료!";
     }
 }

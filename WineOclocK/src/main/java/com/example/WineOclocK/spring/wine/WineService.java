@@ -1,6 +1,7 @@
 package com.example.WineOclocK.spring.wine;
 
 import com.example.WineOclocK.spring.domain.entity.*;
+import com.example.WineOclocK.spring.wine.dto.NoteReqDto;
 import com.example.WineOclocK.spring.wine.dto.SearchReqDto;
 import com.example.WineOclocK.spring.wine.dto.SearchWineDto;
 import com.example.WineOclocK.spring.wine.repository.NoteRepository;
@@ -233,12 +234,13 @@ public class WineService {
     /**
      * 테이스팅 노트
      */
-    public void insertNote(Long userId, Long wineId, String content) {
+    public void insertNote(NoteReqDto noteReqDto) {
         try {
             Note note = Note.builder()
-                    .wineId(wineId)
-                    .userId(userId)
-                    .content(content)
+                    .wineId(noteReqDto.getWineId())
+                    .userId(noteReqDto.getUserId())
+                    .grade(noteReqDto.getGrade())
+                    .content(noteReqDto.getContent())
                     .build();
             noteRepository.save(note);
         } catch (Exception exception) {
@@ -246,11 +248,8 @@ public class WineService {
         }
     }
 
-    public void deleteNote(Long userId, Long wineId) {
-        try {
-            noteRepository.deleteByUserIdAndWineId(userId, wineId);
-        } catch (Exception exception) {
-            throw new IllegalArgumentException("------note delete error");
-        }
+    @Transactional
+    public void deleteNote(NoteReqDto noteReqDto) {
+        noteRepository.deleteByUserIdAndWineId(noteReqDto.getUserId(), noteReqDto.getWineId());
     }
 }
