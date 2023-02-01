@@ -9,5 +9,5 @@ public class NoteReqDto {
     private Long userId;
     private Long wineId;
     private int grade;
-    private String content;
+    private String review;
 }

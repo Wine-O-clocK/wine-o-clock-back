@@ -23,5 +23,13 @@ public class Note {
     private Long userId;
     private Long wineId;
     private int grade;
-    private String content;
+    private String review;
+
+    /**
+     * update 기능
+     */
+    public void update(int grade, String review) {
+        this.grade = grade;
+        this.review = review;
+    }
 }

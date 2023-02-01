@@ -162,19 +162,18 @@ public class WineController {
     }
 
     @PostMapping("/detail")
-    public String insertNote (@RequestBody NoteReqDto noteReqDto) throws IOException {
-        wineService.insertNote(noteReqDto);
-        return "테이스팅 노트 저장완료!";
+    public Note insertNote (@RequestBody NoteReqDto noteReqDto) throws IOException {
+        return wineService.insertNote(noteReqDto);
     }
 
     @PutMapping("/detail")
-    public String updateNote (@RequestBody NoteReqDto noteReqDto) throws IOException {
-        return "테이스팅 노트 수정완료!";
+    public Note updateNote (@RequestBody NoteReqDto noteReqDto) throws IOException {
+        wineService.updateNote(noteReqDto);
+        return wineService.updateNote(noteReqDto);
     }
 
     @DeleteMapping("/detail")
-    public String DeleteNote (@RequestBody NoteReqDto noteReqDto) throws IOException {
-        wineService.deleteNote(noteReqDto);
-        return "테이스닝 노트 삭제완료!";
+    public Long DeleteNote (@RequestBody NoteReqDto noteReqDto) throws IOException {
+        return wineService.deleteNote(noteReqDto);
     }
 }

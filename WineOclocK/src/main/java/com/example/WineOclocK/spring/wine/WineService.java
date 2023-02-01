@@ -248,22 +248,32 @@ public class WineService {
     /**
      * 테이스팅 노트
      */
-    public void insertNote(NoteReqDto noteReqDto) {
+    public Note insertNote(NoteReqDto noteReqDto) {
         try {
             Note note = Note.builder()
                     .wineId(noteReqDto.getWineId())
                     .userId(noteReqDto.getUserId())
-                    .grade(noteReqDto.getGrade())
-                    .content(noteReqDto.getContent())
+                    .grade(noteReqDto.getGrade()).review(noteReqDto.getReview())
                     .build();
-            noteRepository.save(note);
+            return noteRepository.save(note);
         } catch (Exception exception) {
             throw new IllegalArgumentException("------note build error");
         }
     }
 
     @Transactional
-    public void deleteNote(NoteReqDto noteReqDto) {
-        noteRepository.deleteByUserIdAndWineId(noteReqDto.getUserId(), noteReqDto.getWineId());
+    public Note updateNote(NoteReqDto noteReqDto) {
+
+        Note note = noteRepository.findByUserIdAndWineId(noteReqDto.getUserId(), noteReqDto.getWineId());
+        note.update(noteReqDto.getGrade(), noteReqDto.getReview());
+
+        return note;
+    }
+
+    @Transactional
+    public Long deleteNote(NoteReqDto noteReqDto) {
+        Long noteId = noteRepository.findByUserIdAndWineId(noteReqDto.getUserId(), noteReqDto.getWineId()).getNoteId();
+        noteRepository.deleteById(noteId);
+        return noteId;
     }
 }
