@@ -2,6 +2,7 @@ package com.example.WineOclocK.spring.crawling;
 
 import com.example.WineOclocK.spring.crawling.repository.*;
 import com.example.WineOclocK.spring.crawling.entity.*;
+import com.example.WineOclocK.spring.wine.repository.WineRepository;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -23,6 +24,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class CrawlingService {
+    private final WineRepository wineRepository;
     private final AccessRepository accessRepository;
     private final MentionRepository mentionRepository;
     private final PresentRepository presentRepository;
@@ -141,12 +143,13 @@ public class CrawlingService {
         resource = new ClassPathResource("recent_data.json");
         JSONArray recentArr = (JSONArray) new JSONParser().parse(new InputStreamReader(resource.getInputStream(), "UTF-8"));
 
-        // jsonArr에서 하나씩 JSONObject로 cast해서 사용
+        // jsonArr 에서 하나씩 JSONObject 로 cast 해서 사용
         logger.info("★★★★★★★★★★★★★★★ RECENT ★★★★★★★★★★★★★★★");
         if (recentArr.size() > 0){
             for(int i=0; i<recentArr.size(); i++){
                 json = (JSONObject)recentArr.get(i);
                 Recent recent = Recent.builder()
+                        .wineId(findWineId((String) json.get("wineName")))
                         .wineImage((String) json.get("wineImage"))
                         .wineName((String) json.get("wineName"))
                         .wineNameEng((String) json.get("wineNameEng"))
@@ -168,6 +171,10 @@ public class CrawlingService {
         //String SUCCESS_MENTION = "data.json -> db 저장 성공!";
     }
 
+    public Long findWineId (String wineName) {
+        return wineRepository.findByWineName(wineName).get().getId();
+    }
+
     public Map<String, Object> createResponse() {
 
         List<Access> accessList = accessRepository.findAll();
@@ -185,4 +192,6 @@ public class CrawlingService {
 
         return crawlingResponse;
     }
+
+
 }
