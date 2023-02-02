@@ -150,13 +150,13 @@ public class WineController {
 
         detailMap.put("wineData", wine);
         detailMap.put("wineSave", wineService.existSave(userId, wineId));
-        try {
-            Note note = wineService.getNote(userId, wineId);
+
+        if(wineService.existNote(userId, wineId)) {
+            detailMap.put("tastingNote", wineService.getNote(userId, wineId));
             detailMap.put("existNote", true);
-            detailMap.put("tastingNote", note);
-        } catch (NullPointerException e){
-            detailMap.put("existNote", false);
+        } else {
             detailMap.put("tastingNote", null);
+            detailMap.put("existNote", false);
         }
 
         return detailMap;

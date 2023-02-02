@@ -233,6 +233,10 @@ public class WineService {
         return saveRepository.existsByUserIdAndWineId(userId, wineId);
     }
 
+    public boolean existNote (Long userId, Long wineId){
+        return noteRepository.existsByUserIdAndWineId(userId, wineId);
+    }
+
     /**
      * rating 반영하기
      */
