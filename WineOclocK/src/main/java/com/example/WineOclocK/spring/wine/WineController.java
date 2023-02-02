@@ -30,9 +30,9 @@ public class WineController {
     private final UserService userService;
 
     @GetMapping("/search")
-    public List<SearchWineDto> searchKeyword(@RequestParam(value = "keyword", required = false, defaultValue="") String keyword) {
+    public List<SearchWineDto> searchKeyword(@RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "keyword", required = false, defaultValue="") String keyword) {
         System.out.println("--------- searchKeyword");
-        List<SearchWineDto> wineList = wineService.searchWines(keyword);
+        List<SearchWineDto> wineList = wineService.searchWines(userId, keyword);
         System.out.println("--------- wineSearch 성공");
         return wineList;
     }
@@ -130,7 +130,6 @@ public class WineController {
     @GetMapping("/saveWine/{userId}/{wineId}")
     public String insertSaveWine (@PathVariable Long userId, @PathVariable Long wineId) throws IOException {
         wineService.insertSave(userId, wineId);
-
         //와인 저장시 -> rating 점수 3점 추가
         wineService.insertRating(userId, wineId,3);
         return "와인 저장 완료!";

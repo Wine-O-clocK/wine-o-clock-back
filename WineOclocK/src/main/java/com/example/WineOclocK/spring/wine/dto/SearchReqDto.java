@@ -9,9 +9,9 @@ import java.util.ArrayList;
 @Data
 @NoArgsConstructor
 public class SearchReqDto {
+    private Long userId;
     private String type;
     private int price;
-
     private String aroma1;
     private String aroma2;
     private String aroma3;

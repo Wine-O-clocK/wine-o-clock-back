@@ -124,7 +124,8 @@ public class WineService {
     }
 
     @Transactional
-    public List<SearchWineDto> searchWines (String keyword){
+    public List<SearchWineDto> searchWines (Long userId, String keyword){
+        System.out.println("---------userId = " + userId + "가 들어왔습니다");
         System.out.println("--------- wineSearch 시작 : " + keyword + "와인을 검색합니다");
 
         List<Wine> wines = wineRepository.findByWineNameContaining(keyword);
@@ -136,6 +137,8 @@ public class WineService {
         }
 
         for(Wine wine : wines) {
+            //검색 시 나온 결과 와인들 -> rating 1점 추가
+            insertRating(userId, wine.getId(), 1);
             wineDtoList.add(this.convertEntityToDto(wine));
         }
         return wineDtoList;
@@ -179,6 +182,10 @@ public class WineService {
         }
 
         for(Wine wine : wines) {
+            if(searchReqDto.getUserId() != null){
+                //검색 시 나온 결과 와인들 -> rating 1점 추가
+                insertRating(searchReqDto.getUserId(), wine.getId(), 1);
+            }
             wineDtoList.add(this.convertEntityToDto(wine));
         }
         return wineDtoList;
