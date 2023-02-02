@@ -265,8 +265,6 @@ public class WineService {
     public Note insertNote(NoteReqDto noteReqDto) {
         try {
             Note note = Note.builder()
-                    .wineId(noteReqDto.getWineId())
-                    .userId(noteReqDto.getUserId())
                     .grade(noteReqDto.getGrade()).review(noteReqDto.getReview())
                     .build();
             return noteRepository.save(note);
@@ -276,17 +274,17 @@ public class WineService {
     }
 
     @Transactional
-    public Note updateNote(NoteReqDto noteReqDto) {
+    public Note updateNote(Long userId, Long wineId, NoteReqDto noteReqDto) {
 
-        Note note = noteRepository.findByUserIdAndWineId(noteReqDto.getUserId(), noteReqDto.getWineId());
+        Note note = noteRepository.findByUserIdAndWineId(userId, wineId);
         note.update(noteReqDto.getGrade(), noteReqDto.getReview());
 
         return note;
     }
 
     @Transactional
-    public Long deleteNote(NoteReqDto noteReqDto) {
-        Long noteId = noteRepository.findByUserIdAndWineId(noteReqDto.getUserId(), noteReqDto.getWineId()).getNoteId();
+    public Long deleteNote(Long userId, Long wineId) {
+        Long noteId = noteRepository.findByUserIdAndWineId(userId, wineId).getNoteId();
         noteRepository.deleteById(noteId);
         return noteId;
     }
