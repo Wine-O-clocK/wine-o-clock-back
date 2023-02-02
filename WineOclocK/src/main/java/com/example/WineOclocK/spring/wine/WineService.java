@@ -260,6 +260,7 @@ public class WineService {
                 Rating rating = Rating.builder()
                         .userId(userId)
                         .wineId(wineId)
+                        .wineName(getWine(wineId).getWineName())
                         .rating(num)
                         .build();
                 ratingRepository.save(rating);

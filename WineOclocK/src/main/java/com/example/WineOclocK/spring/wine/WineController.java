@@ -147,7 +147,7 @@ public class WineController {
      */
     @GetMapping("/detail/{userId}/{wineId}")
     public Map<String,Object> getDetail (@PathVariable Long userId, @PathVariable Long wineId) throws IOException {
-        //디테일페이지 접근시 -> rating 2점 추가
+        //* rating 추가 (디테일페이지 접근시 -> 2점)
         wineService.insertRating(userId, wineId,2);
 
         HashMap<String, Object> detailMap = new HashMap<>();
@@ -167,7 +167,7 @@ public class WineController {
 
     @PostMapping("/detail/{userId}/{wineId}")
     public Note insertNote (@PathVariable Long userId, @PathVariable Long wineId, @RequestBody NoteReqDto noteReqDto) throws IOException {
-        //테이스팅 노트 접근 -> grade 추가
+        //* rating 추가 (테이스팅 노트 -> user 가 입력한 grade)
         wineService.insertRating(userId, wineId, noteReqDto.getGrade());
         return wineService.insertNote(noteReqDto);
     }

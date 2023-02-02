@@ -24,7 +24,9 @@ public class Rating {
     private Long ratingId;
     private Long userId;
     private Long wineId;
+    private String wineName;
     private int rating;
+
 
     /**
      * update 기능
