@@ -244,6 +244,9 @@ public class WineService {
      */
     @Transactional
     public void insertRating (Long userId, Long wineId, int num) {
+
+        if(userId == 0) return; //userId == 0 : 비회원이라는 의미
+
         //이미 데이터베이스에 있는지 확인
         if (ratingRepository.existsByUserIdAndWineId(userId, wineId)) {
             Rating rating = getRating(userId, wineId);
