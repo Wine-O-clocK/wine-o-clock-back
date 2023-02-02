@@ -34,6 +34,11 @@ public class WineService {
         return noteRepository.findByUserIdAndWineId(userId, wineId);
     }
 
+    public Rating getRating (long userId, long wineId) {
+        return ratingRepository.findByUserIdAndWineId(userId, wineId)
+                .orElseThrow(() -> new IllegalArgumentException("not found rating"));
+    }
+
     /**
      * json 형식으로 fastApi 에게 보냄
      *
@@ -183,7 +188,6 @@ public class WineService {
      * Wine Dto -> wine Entity 변경
      */
     public SearchWineDto convertEntityToDto(Wine wine){
-
         return SearchWineDto.builder()
                 .wineName(wine.getWineName())
                 .wineNameEng(wine.getWineNameEng())
@@ -203,8 +207,9 @@ public class WineService {
      * 와인 저장하기 기능
      * insert -> 저장하기
      * delete -> 저장취소
-     * exist -> 여부
+     * exist -> 존재여부
      */
+    @Transactional
     public void insertSave (Long userId, Long wineId) {
         try {
             Save save = Save.builder()
@@ -217,12 +222,9 @@ public class WineService {
         }
     }
 
+    @Transactional
     public void deleteSave (Long userId, Long wineId) {
-        try {
-            saveRepository.deleteByUserIdAndWineId(userId,wineId);
-        } catch (Exception exception) {
-            throw new IllegalArgumentException("------save delete error");
-        }
+        saveRepository.deleteByUserIdAndWineId(userId,wineId);
     }
 
     public boolean existSave (Long userId, Long wineId) {
@@ -232,22 +234,34 @@ public class WineService {
     /**
      * rating 반영하기
      */
+    @Transactional
     public void insertRating (Long userId, Long wineId, int num) {
-        try {
-            Rating rating = Rating.builder()
-                    .userId(userId)
-                    .wineId(wineId)
-                    .rating(num)
-                    .build();
-            ratingRepository.save(rating);
-        } catch (Exception exception) {
-            throw new IllegalArgumentException("------rating build error");
+        //이미 데이터베이스에 있는지 확인
+        if (ratingRepository.existsByUserIdAndWineId(userId, wineId)) {
+            Rating rating = getRating(userId, wineId);
+            //기존 값 vs num 값 비교 후 num 값이 높으면 새로 업데이트
+            if (num > rating.getRating()) {
+                rating.update(num);
+            }
+
+        } else { //디비에 존재 X -> 새로 디비에 저장
+            try {
+                Rating rating = Rating.builder()
+                        .userId(userId)
+                        .wineId(wineId)
+                        .rating(num)
+                        .build();
+                ratingRepository.save(rating);
+            } catch (Exception exception) {
+                throw new IllegalArgumentException("------rating build error");
+            }
         }
     }
 
     /**
      * 테이스팅 노트
      */
+    @Transactional
     public Note insertNote(NoteReqDto noteReqDto) {
         try {
             Note note = Note.builder()

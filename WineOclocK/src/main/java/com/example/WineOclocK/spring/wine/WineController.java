@@ -48,6 +48,10 @@ public class WineController {
         return wineService.searchByFiltering(searchReqDto);
     }
 
+    /**
+     * 와인 추천하기
+     */
+
     @GetMapping("/recommend/{userId}")
     public ResponseEntity<Map<String,Object>> requestToFlask (@PathVariable Long userId) throws IOException {
 
@@ -121,9 +125,14 @@ public class WineController {
         return new ResponseEntity<>(resultMap, HttpStatus.OK);
     }
 
+    /**
+     * 와인 저장하기
+     */
     @GetMapping("/saveWine/{userId}/{wineId}")
     public String insertSaveWine (@PathVariable Long userId, @PathVariable Long wineId) throws IOException {
         wineService.insertSave(userId, wineId);
+
+        //와인 저장시 -> rating 점수 3점 추가
         wineService.insertRating(userId, wineId,3);
         return "와인 저장 완료!";
     }
@@ -135,19 +144,16 @@ public class WineController {
     }
 
     /**
-     * [보여줘야 하는 것]
+     * 와인 디테일 페이지
      * 와인정보 + 저장정보 + 테이스팅 노트 정보
      */
     @GetMapping("/detail")
     public Map<String,Object> getDetail (@RequestBody DetailReqDto detailReqDto) throws IOException {
+        //디테일페이지 접근시 -> rating 2점 추가
+        wineService.insertRating(detailReqDto.getUserId(), detailReqDto.getWineId(),2);
 
-        HashMap<String, Object> detailMap = new HashMap<String, Object>();
-
+        HashMap<String, Object> detailMap = new HashMap<>();
         Wine wine = wineService.getWine(detailReqDto.getWineId());
-
-        System.out.println("---DetailReqDto = " + detailReqDto.getWineId());
-        System.out.println("---wineService.getWine = " + wine.getId());
-        System.out.println("---wineService.existSave = "+ wineService.existSave(detailReqDto.getUserId(), detailReqDto.getWineId()));
 
         detailMap.put("wineData", wine);
         detailMap.put("wineSave", wineService.existSave(detailReqDto.getUserId(), detailReqDto.getWineId()));
@@ -163,12 +169,15 @@ public class WineController {
 
     @PostMapping("/detail")
     public Note insertNote (@RequestBody NoteReqDto noteReqDto) throws IOException {
+        //테이스팅 노트 접근 -> grade 추가
+        wineService.insertRating(noteReqDto.getUserId(), noteReqDto.getWineId(), noteReqDto.getGrade());
         return wineService.insertNote(noteReqDto);
     }
 
     @PutMapping("/detail")
     public Note updateNote (@RequestBody NoteReqDto noteReqDto) throws IOException {
-        wineService.updateNote(noteReqDto);
+        //테이스팅 노트 접근 -> grade 추가
+        wineService.insertRating(noteReqDto.getUserId(), noteReqDto.getWineId(), noteReqDto.getGrade());
         return wineService.updateNote(noteReqDto);
     }
 

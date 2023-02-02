@@ -25,4 +25,11 @@ public class Rating {
     private Long userId;
     private Long wineId;
     private int rating;
+
+    /**
+     * update 기능
+     */
+    public void update(int rating) {
+        this.rating = rating;
+    }
 }
