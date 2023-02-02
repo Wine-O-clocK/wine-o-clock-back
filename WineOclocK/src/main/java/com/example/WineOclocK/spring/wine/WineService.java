@@ -189,6 +189,7 @@ public class WineService {
      */
     public SearchWineDto convertEntityToDto(Wine wine){
         return SearchWineDto.builder()
+                .wineId(wine.getId())
                 .wineName(wine.getWineName())
                 .wineNameEng(wine.getWineNameEng())
                 .wineImage(wine.getWineImage())
@@ -275,10 +276,8 @@ public class WineService {
 
     @Transactional
     public Note updateNote(Long userId, Long wineId, NoteReqDto noteReqDto) {
-
         Note note = noteRepository.findByUserIdAndWineId(userId, wineId);
         note.update(noteReqDto.getGrade(), noteReqDto.getReview());
-
         return note;
     }
 
@@ -287,5 +286,9 @@ public class WineService {
         Long noteId = noteRepository.findByUserIdAndWineId(userId, wineId).getNoteId();
         noteRepository.deleteById(noteId);
         return noteId;
+    }
+
+    public Long findWineId (String wineName) {
+        return wineRepository.findByWineName(wineName).get().getId();
     }
 }

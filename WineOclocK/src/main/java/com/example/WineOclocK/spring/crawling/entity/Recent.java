@@ -19,6 +19,8 @@ public class Recent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long recentId;
+
+    private Long wineId;
     private String wineImage;
     private String wineName;
     private String wineNameEng;

@@ -7,6 +7,7 @@ import lombok.Data;
 @Builder
 public class SearchWineDto {
 
+    private Long wineId;
     private String wineImage;
     private String wineName;
     private String wineNameEng;
