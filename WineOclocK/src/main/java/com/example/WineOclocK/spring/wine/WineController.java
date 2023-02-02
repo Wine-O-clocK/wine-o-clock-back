@@ -1,22 +1,16 @@
 package com.example.WineOclocK.spring.wine;
 
-import com.example.WineOclocK.spring.domain.entity.Note;
-import com.example.WineOclocK.spring.domain.entity.Role;
-import com.example.WineOclocK.spring.domain.entity.User;
-import com.example.WineOclocK.spring.domain.entity.Wine;
+import com.example.WineOclocK.spring.domain.entity.*;
 import com.example.WineOclocK.spring.user.UserService;
-import com.example.WineOclocK.spring.wine.dto.DetailReqDto;
 import com.example.WineOclocK.spring.wine.dto.NoteReqDto;
 import com.example.WineOclocK.spring.wine.dto.SearchReqDto;
 import com.example.WineOclocK.spring.wine.dto.SearchWineDto;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.springframework.http.*;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -43,8 +37,8 @@ public class WineController {
         System.out.println("searchReqDto.getType() = " + searchReqDto.getType());
         System.out.println("searchReqDto.getPrice() = " + searchReqDto.getPrice());
         System.out.println("searchReqDto.getAroma1() = " + searchReqDto.getAroma1());
-        System.out.println("searchReqDto.getAroma1() = " + searchReqDto.getAroma2());
-        System.out.println("searchReqDto.getAroma1() = " + searchReqDto.getAroma3());
+        System.out.println("searchReqDto.getAroma2() = " + searchReqDto.getAroma2());
+        System.out.println("searchReqDto.getAroma3() = " + searchReqDto.getAroma3());
         return wineService.searchByFiltering(searchReqDto);
     }
 
@@ -64,40 +58,40 @@ public class WineController {
 
         //1. URL set & 2. Body set
         String url;
-        Map<String, Object> recommendData;
+        Map<String, Object> requestData;
 
         //3. 호출할 외부 API 를 입력 -> 각 유저 레벨 별로 다른 api 호출
         User user = userService.getUser(userId); //유저 확인
         System.out.println("-------user.getRole() = " + user.getRole());
         if (user.getRole() == Role.ROLE_USER_0) {
             url = "http://127.0.0.1:5000/recommend/content";
-            recommendData = wineService.recommendContent(user);
+            requestData = wineService.recommendContent(user);
 
             System.out.println("-------url = " + url);
-            System.out.println("-------recommendData = " + recommendData.get("userWineStr"));
-            System.out.println("-------userLikeType = " + recommendData.get("userLikeType"));
-            System.out.println("-------userLikeSweet = " + recommendData.get("userLikeSweet"));
-            System.out.println("-------userLikeBody = " + recommendData.get("userLikeBody"));
-            System.out.println("-------userLikeAroma1 = " + recommendData.get("userLikeAroma1"));
-            System.out.println("-------userLikeAroma2 = " + recommendData.get("userLikeAroma2"));
-            System.out.println("-------userLikeAroma3 = " + recommendData.get("userLikeAroma3"));
+            System.out.println("-------recommendData = " + requestData.get("userWineStr"));
+            System.out.println("-------userLikeType = " + requestData.get("userLikeType"));
+            System.out.println("-------userLikeSweet = " + requestData.get("userLikeSweet"));
+            System.out.println("-------userLikeBody = " + requestData.get("userLikeBody"));
+            System.out.println("-------userLikeAroma1 = " + requestData.get("userLikeAroma1"));
+            System.out.println("-------userLikeAroma2 = " + requestData.get("userLikeAroma2"));
+            System.out.println("-------userLikeAroma3 = " + requestData.get("userLikeAroma3"));
 
         } else if (user.getRole() == Role.ROLE_USER_1) {
             url = "http://127.0.0.1:5000/recommend/item";
-            recommendData = wineService.recommendItem();
-            System.out.println("-------recommendData = " + recommendData.get("ratings"));
+            requestData = wineService.findAllRating();
+            System.out.println("-------requestData = " + requestData.get("ratings"));
 
         } else if (user.getRole() == Role.ROLE_USER_2) {
             url = "http://127.0.0.1:5000/recommend/latent";
-            recommendData = wineService.recommendLatent(user);
+            requestData = wineService.findAllRating();
 
         } else {
             url = "";
-            recommendData = wineService.recommendContent(user);
+            requestData = wineService.recommendContent(user);
         }
 
         //4. 받은 데이터를 다시 보낼 수 있게 만들기
-        JSONObject body = new JSONObject(recommendData);
+        JSONObject body = new JSONObject(requestData);
 
         // 설정한 Header + Body 를 가진 HttpEntity 객체 생성
         HttpEntity<?> requestMessage = new HttpEntity<>(body, httpHeaders);
@@ -115,6 +109,7 @@ public class WineController {
             List<Wine> wineList = wineService.flaskResponseParsing(responseEntity.getBody());
             resultMap.put("body", wineList); // 반환받은 실제 데이터 정보
         } else if (user.getRole() == Role.ROLE_USER_1) {
+
             System.out.println(responseEntity.getBody());
         } else if (user.getRole() == Role.ROLE_USER_2) {
             System.out.println(responseEntity.getBody());
@@ -169,7 +164,7 @@ public class WineController {
     public Note insertNote (@PathVariable Long userId, @PathVariable Long wineId, @RequestBody NoteReqDto noteReqDto) throws IOException {
         //* rating 추가 (테이스팅 노트 -> user 가 입력한 grade)
         wineService.insertRating(userId, wineId, noteReqDto.getGrade());
-        return wineService.insertNote(noteReqDto);
+        return wineService.insertNote(userId, wineId,noteReqDto);
     }
 
     @PutMapping("/detail/{userId}/{wineId}")

@@ -94,16 +94,10 @@ public class WineService {
         return map;
     }
 
-    public Map<String, Object> recommendItem() throws IOException {
+    public Map<String, Object> findAllRating() throws IOException {
         Map<String, Object> map = new HashMap<>();
         List<Rating> ratings = ratingRepository.findAll();
         map.put("ratings", ratings);
-
-        return map;
-    }
-
-    public Map<String, Object> recommendLatent(User user) {
-        Map<String, Object> map = new HashMap<>();
 
         return map;
     }
@@ -274,9 +268,11 @@ public class WineService {
      * 테이스팅 노트
      */
     @Transactional
-    public Note insertNote(NoteReqDto noteReqDto) {
+    public Note insertNote(Long userId, Long wineId, NoteReqDto noteReqDto) {
         try {
             Note note = Note.builder()
+                    .userId(userId)
+                    .wineId(wineId)
                     .grade(noteReqDto.getGrade()).review(noteReqDto.getReview())
                     .build();
             return noteRepository.save(note);
