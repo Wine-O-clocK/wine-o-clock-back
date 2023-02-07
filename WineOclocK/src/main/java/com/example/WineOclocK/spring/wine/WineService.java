@@ -9,6 +9,7 @@ import com.example.WineOclocK.spring.wine.repository.RatingRepository;
 import com.example.WineOclocK.spring.wine.repository.SaveRepository;
 import com.example.WineOclocK.spring.wine.repository.WineRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -94,25 +95,26 @@ public class WineService {
         return map;
     }
 
-    public Map<String, Object> findAllRating() throws IOException {
-        Map<String, Object> map = new HashMap<>();
-        List<Rating> ratings = ratingRepository.findAll();
-        map.put("ratings", ratings);
-
-        return map;
-    }
-
-    public List<Wine> flaskResponseParsing(String string) {
+    public List<Wine> flaskResponseParsing(User user, String string) {
 
         string = string.substring(1, string.length()-2); // 앞 뒤 '[', ']' 제거
+        string = string.replaceAll("\'", "");
         String[] strSplit = string.split(","); // , 를 기준으로 나눔
 
         List<Wine> wineResult = new ArrayList<>();
 
-        for(String s : strSplit) {
-            Wine wine = wineRepository.findById(Long.parseLong(s))
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 와인입니다."));
-            wineResult.add(wine);
+        if(user.getRole() == Role.ROLE_USER_0) {
+            for(String s : strSplit) {
+                Wine wine = wineRepository.findById(Long.parseLong(s))
+                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 와인입니다."));
+                wineResult.add(wine);
+            }
+        } else {
+            for(String s: strSplit) {
+                Wine wine = wineRepository.findByWineName(s.trim())
+                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 와인입니다."));
+                wineResult.add(wine);
+            }
         }
         return wineResult;
     }
@@ -132,7 +134,7 @@ public class WineService {
 
         for(Wine wine : wines) {
             //검색 시 나온 결과 와인들 -> rating 1점 추가
-            insertRating(userId, wine.getId(), 1);
+            //insertRating(userId, wine.getId(), 1);
             wineDtoList.add(this.convertEntityToDto(wine));
         }
         return wineDtoList;
@@ -178,7 +180,7 @@ public class WineService {
         for(Wine wine : wines) {
             if(searchReqDto.getUserId() != null){
                 //검색 시 나온 결과 와인들 -> rating 1점 추가
-                insertRating(searchReqDto.getUserId(), wine.getId(), 1);
+                insertRating(searchReqDto.getUserId(), wine.getId(), 3);
             }
             wineDtoList.add(this.convertEntityToDto(wine));
         }
@@ -266,6 +268,20 @@ public class WineService {
                 throw new IllegalArgumentException("------rating build error");
             }
         }
+    }
+
+    @Transactional
+    public String searchHighRating(Long userId) {
+        List<Rating> ratingList = ratingRepository.findByUserIdOrderByRatingDesc(userId);
+        return ratingList.get(0).getWineName();
+    }
+
+    @Transactional
+    public Map<String, Object> makeRecommendRequest(Long userId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("ratings", ratingRepository.findAll());
+        map.put("highRatingWine", searchHighRating(userId));
+        return map;
     }
 
     /**

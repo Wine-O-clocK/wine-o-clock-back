@@ -78,13 +78,11 @@ public class WineController {
 
         } else if (user.getRole() == Role.ROLE_USER_1) {
             url = "http://127.0.0.1:5000/recommend/item";
-            requestData = wineService.findAllRating();
-            System.out.println("-------requestData = " + requestData.get("ratings"));
+            requestData = wineService.makeRecommendRequest(userId);
 
         } else if (user.getRole() == Role.ROLE_USER_2) {
             url = "http://127.0.0.1:5000/recommend/latent";
-            requestData = wineService.findAllRating();
-
+            requestData = wineService.makeRecommendRequest(userId);
         } else {
             url = "";
             requestData = wineService.recommendContent(user);
@@ -104,18 +102,10 @@ public class WineController {
         HashMap<String, Object> resultMap = new HashMap<String, Object>();
         resultMap.put("statusCode", responseEntity.getStatusCodeValue()); // HTTP Status Code
 
-        if (user.getRole() == Role.ROLE_USER_0) {
-            // flask response parsing
-            List<Wine> wineList = wineService.flaskResponseParsing(responseEntity.getBody());
-            resultMap.put("body", wineList); // 반환받은 실제 데이터 정보
-        } else if (user.getRole() == Role.ROLE_USER_1) {
+        // flask response parsing
+        List<Wine> wineList = wineService.flaskResponseParsing(user, responseEntity.getBody());
+        resultMap.put("body", wineList); // 반환받은 실제 데이터 정보
 
-            System.out.println(responseEntity.getBody());
-        } else if (user.getRole() == Role.ROLE_USER_2) {
-            System.out.println(responseEntity.getBody());
-        } else {
-
-        }
         return new ResponseEntity<>(resultMap, HttpStatus.OK);
     }
 
@@ -179,5 +169,10 @@ public class WineController {
     @DeleteMapping("/detail/{userId}/{wineId}")
     public Long DeleteNote (@PathVariable Long userId, @PathVariable Long wineId) throws IOException {
         return wineService.deleteNote(userId, wineId);
+    }
+
+    @GetMapping("/test/rating/{userId}")
+    public String getHighRating(@PathVariable Long userId) throws IOException{
+        return wineService.searchHighRating(userId);
     }
 }
