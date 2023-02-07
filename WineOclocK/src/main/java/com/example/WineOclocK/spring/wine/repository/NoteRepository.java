@@ -10,5 +10,7 @@ import java.util.Optional;
 public interface NoteRepository extends JpaRepository <Note, Long> {
     Note findByUserIdAndWineId(Long userId, Long wineId);
 
+    boolean existsByUserIdAndWineId(Long userId, Long wineId);
+
     void deleteByUserIdAndWineId(Long userId, Long wineId);
 }
