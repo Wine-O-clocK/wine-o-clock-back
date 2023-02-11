@@ -48,6 +48,26 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    /**
+     * update 기능
+     */
+    public void update(String password, String username, String birthday,
+                       String userLikeType, int userLikeSweet, int userLikeBody,
+                       String userLikeAroma1, String userLikeAroma2, String userLikeAroma3) {
+
+        this.password = password;
+        this.username = username;
+        this.birthday = birthday;
+        this.userLikeType = userLikeType;
+        this.userLikeSweet = userLikeSweet;
+        this.userLikeBody = userLikeBody;
+        this.userLikeAroma1 = userLikeAroma1;
+        this.userLikeAroma2 = userLikeAroma2;
+        this.userLikeAroma3 = userLikeAroma3;
+
+
+    }
+
     @Override
     public String toString() {
         return

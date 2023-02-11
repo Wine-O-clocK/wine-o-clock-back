@@ -1,10 +1,12 @@
 package com.example.WineOclocK.spring.user;
 
-import com.example.WineOclocK.spring.domain.entity.Role;
+import com.example.WineOclocK.spring.domain.entity.*;
 import com.example.WineOclocK.spring.user.dto.JoinDto;
 import com.example.WineOclocK.spring.user.dto.LoginDto;
-import com.example.WineOclocK.spring.domain.entity.User;
 import com.example.WineOclocK.spring.user.UserRepository;
+import com.example.WineOclocK.spring.wine.repository.NoteRepository;
+import com.example.WineOclocK.spring.wine.repository.SaveRepository;
+import com.example.WineOclocK.spring.wine.repository.WineRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,9 +23,39 @@ public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
 
+    private final WineRepository wineRepository;
+
+    private final SaveRepository saveRepository;
+
+    private final NoteRepository noteRepository;
+
     public User getUser(long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("not found user with id =" + id));
+    }
+
+    public List<Wine> getWineBySave(Long id){
+        List<Save> saveList = saveRepository.findAllByUserId(id);
+        List<Wine> saveWineList = new ArrayList<>();
+
+        for(int i=0; i<saveList.size(); i++) {
+            Wine wine = wineRepository.findById(saveList.get(i).getWineId())
+                    .orElseThrow(()-> new IllegalArgumentException("존재하지 않는 와인입니다"));
+            saveWineList.add(wine);
+        }
+        return saveWineList;
+    }
+
+    public List<Wine> getWineByNote(Long id){
+        List<Note> noteList = noteRepository.findAllByUserId(id);
+        List<Wine> noteWineList = new ArrayList<>();
+
+        for(int i=0; i<noteList.size(); i++) {
+            Wine wine = wineRepository.findById(noteList.get(i).getWineId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 와인입니다"));
+            noteWineList.add(wine);
+        }
+        return noteWineList;
     }
 
     /**
@@ -39,6 +72,16 @@ public class UserService {
         return null;
     }
 
+    public String userLikeTypeStrToList(List<String> userLikeTypeList) {
+        //유저선호와인 타입 list -> str 로 변경작업
+        StringBuilder sb = new StringBuilder();
+        for (String wineType : userLikeTypeList) {
+            sb.append(wineType).append(" ");
+        }
+        String userLikeTypeStr = sb.toString().substring(0, sb.length() - 1);
+        return userLikeTypeStr;
+    }
+
     /**
      * 회원가입
      */
@@ -48,16 +91,6 @@ public class UserService {
         if(userRepository.existsByEmail(joinDto.getEmail())){
             throw new IllegalArgumentException("이미 존재하는 이메일 입니다");
         }
-
-        //유저선호와인 타입 list -> str 로 변경작업
-        List<String> userLikeTypeList = joinDto.getUserLikeType();
-        StringBuilder sb = new StringBuilder();
-        for (String wineType : userLikeTypeList) {
-            sb.append(wineType).append(" ");
-        }
-        String userLikeTypeStr = sb.toString().substring(0, sb.length() - 1);
-
-
         // 와인당도 : 0 (단 와인 선호), 1(단 와인 불호), 2(상관없음)
         int userLikeSweetInt;
         if (joinDto.getUserLikeSweet() == 0){ userLikeSweetInt = 5; }
@@ -70,19 +103,6 @@ public class UserService {
         else if (joinDto.getUserLikeBody() == 1) { userLikeBodyInt = 5; }
         else { userLikeBodyInt = 3; }
 
-        System.out.println("joinDto.getEmail() = " + joinDto.getEmail());
-        System.out.println("joinDto.getPassword() = " + joinDto.getPassword());
-        System.out.println("joinDto.getBirthday() = " + joinDto.getBirthday());
-        System.out.println("joinDto.getUsername() = " + joinDto.getUsername());
-
-        System.out.println("userLikeTypeStr = " + userLikeTypeStr);
-        System.out.println("userLikeSweetInt = " + userLikeSweetInt);
-        System.out.println("userLikeBodyInt = " + userLikeBodyInt);
-
-        System.out.println("joinDto.getUserLikeAroma1() = " + joinDto.getUserLikeAroma1());
-        System.out.println("joinDto.getUserLikeAroma2() = " + joinDto.getUserLikeAroma2());
-        System.out.println("joinDto.getUserLikeAroma3() = " + joinDto.getUserLikeAroma3());
-
         try {
             User user = User.builder()
                     .email(joinDto.getEmail())
@@ -90,7 +110,7 @@ public class UserService {
                     .birthday(joinDto.getBirthday())
                     .username(joinDto.getUsername())
 
-                    .userLikeType(userLikeTypeStr)
+                    .userLikeType(userLikeTypeStrToList(joinDto.getUserLikeType()))
                     .userLikeSweet(userLikeSweetInt)
                     .userLikeBody(userLikeBodyInt)
 
@@ -98,12 +118,33 @@ public class UserService {
                     .userLikeAroma2(joinDto.getUserLikeAroma2())
                     .userLikeAroma3(joinDto.getUserLikeAroma3())
 
-                    .role(Role.ROLE_USER_1) // 신규가입하자마자 등록되는 레벨
+                    .role(Role.ROLE_USER_0) // 신규가입하자마자 등록되는 레벨
                     .build();
             userRepository.save(user);
         } catch (Exception exception) {
             throw new IllegalArgumentException("회원가입 서비스 빌드 오류");
         }
+    }
+
+    /**
+     * 마이페이지 보여주기
+     */
+
+
+    /**
+     * 회원정보 수정
+     */
+    public User updateUser(Long userId, JoinDto joinDto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다.")
+        );
+
+        user.update(joinDto.getPassword(), joinDto.getUsername(), joinDto.getBirthday(),
+                userLikeTypeStrToList(joinDto.getUserLikeType()),
+                joinDto.getUserLikeSweet(), joinDto.getUserLikeBody(),
+                joinDto.getUserLikeAroma1(), joinDto.getUserLikeAroma2(), joinDto.getUserLikeAroma3());
+
+        return user;
     }
 
     /**
