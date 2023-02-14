@@ -66,20 +66,9 @@ public class WineController {
         if (user.getRole() == Role.ROLE_USER_0) {
             url = "http://127.0.0.1:5000/recommend/content";
             requestData = wineService.recommendContent(user);
-
-            System.out.println("-------url = " + url);
-            System.out.println("-------recommendData = " + requestData.get("userWineStr"));
-            System.out.println("-------userLikeType = " + requestData.get("userLikeType"));
-            System.out.println("-------userLikeSweet = " + requestData.get("userLikeSweet"));
-            System.out.println("-------userLikeBody = " + requestData.get("userLikeBody"));
-            System.out.println("-------userLikeAroma1 = " + requestData.get("userLikeAroma1"));
-            System.out.println("-------userLikeAroma2 = " + requestData.get("userLikeAroma2"));
-            System.out.println("-------userLikeAroma3 = " + requestData.get("userLikeAroma3"));
-
         } else if (user.getRole() == Role.ROLE_USER_1) {
             url = "http://127.0.0.1:5000/recommend/item";
             requestData = wineService.makeRecommendRequest(userId);
-
         } else if (user.getRole() == Role.ROLE_USER_2) {
             url = "http://127.0.0.1:5000/recommend/latent";
             requestData = wineService.makeRecommendRequest(userId);
@@ -99,7 +88,7 @@ public class WineController {
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, requestMessage, String.class);
 
         // 결과값을 담을 객체를 생성
-        HashMap<String, Object> resultMap = new HashMap<String, Object>();
+        HashMap<String, Object> resultMap = new HashMap<>();
         resultMap.put("statusCode", responseEntity.getStatusCodeValue()); // HTTP Status Code
 
         // flask response parsing

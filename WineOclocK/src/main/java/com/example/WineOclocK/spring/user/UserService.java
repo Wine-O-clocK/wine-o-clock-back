@@ -57,6 +57,15 @@ public class UserService {
         }
         return noteWineList;
     }
+    public String userLikeTypeStrToList(List<String> userLikeTypeList) {
+        //유저선호와인 타입 list -> str 로 변경작업
+        StringBuilder sb = new StringBuilder();
+        for (String wineType : userLikeTypeList) {
+            sb.append(wineType).append(" ");
+        }
+        String userLikeTypeStr = sb.toString().substring(0, sb.length() - 1);
+        return userLikeTypeStr;
+    }
 
     /**
      * 로그인
@@ -70,16 +79,6 @@ public class UserService {
         }
         // 로그인에 성공하면 토큰 생성 후 반환
         return null;
-    }
-
-    public String userLikeTypeStrToList(List<String> userLikeTypeList) {
-        //유저선호와인 타입 list -> str 로 변경작업
-        StringBuilder sb = new StringBuilder();
-        for (String wineType : userLikeTypeList) {
-            sb.append(wineType).append(" ");
-        }
-        String userLikeTypeStr = sb.toString().substring(0, sb.length() - 1);
-        return userLikeTypeStr;
     }
 
     /**
@@ -127,19 +126,15 @@ public class UserService {
     }
 
     /**
-     * 마이페이지 보여주기
-     */
-
-
-    /**
      * 회원정보 수정
      */
+    @Transactional
     public User updateUser(Long userId, JoinDto joinDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다.")
         );
-
-        user.update(joinDto.getPassword(), joinDto.getUsername(), joinDto.getBirthday(),
+        user.update(bCryptPasswordEncoder.encode(joinDto.getPassword()),
+                joinDto.getUsername(), joinDto.getBirthday(),
                 userLikeTypeStrToList(joinDto.getUserLikeType()),
                 joinDto.getUserLikeSweet(), joinDto.getUserLikeBody(),
                 joinDto.getUserLikeAroma1(), joinDto.getUserLikeAroma2(), joinDto.getUserLikeAroma3());
@@ -150,6 +145,7 @@ public class UserService {
     /**
      * 회원탈퇴
      */
+    @Transactional
     public void deleteUser(Long userId) {
         userRepository.deleteById(userId);
     }

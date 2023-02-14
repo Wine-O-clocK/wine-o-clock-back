@@ -64,8 +64,6 @@ public class User {
         this.userLikeAroma1 = userLikeAroma1;
         this.userLikeAroma2 = userLikeAroma2;
         this.userLikeAroma3 = userLikeAroma3;
-
-
     }
 
     @Override

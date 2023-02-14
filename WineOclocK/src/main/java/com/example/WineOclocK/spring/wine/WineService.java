@@ -95,7 +95,20 @@ public class WineService {
         return map;
     }
 
+    @Transactional
+    public Map<String, Object> makeRecommendRequest(Long userId) {
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("ratings", ratingRepository.findAll());
+        map.put("highRatingWine", searchHighRating(userId));
+        map.put("userId", userId);
+
+        return map;
+    }
+
     public List<Wine> flaskResponseParsing(User user, String string) {
+
+        System.out.println("WineService.flaskResponseParsing > string = " + string);
 
         string = string.substring(1, string.length()-2); // 앞 뒤 '[', ']' 제거
         string = string.replaceAll("\'", "");
@@ -139,6 +152,7 @@ public class WineService {
         }
         return wineDtoList;
     }
+
     /**
      * 필터링 검색 기능
      */
@@ -276,14 +290,6 @@ public class WineService {
         return ratingList.get(0).getWineName();
     }
 
-    @Transactional
-    public Map<String, Object> makeRecommendRequest(Long userId) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("ratings", ratingRepository.findAll());
-        map.put("highRatingWine", searchHighRating(userId));
-        return map;
-    }
-
     /**
      * 테이스팅 노트
      */
@@ -313,9 +319,5 @@ public class WineService {
         Long noteId = noteRepository.findByUserIdAndWineId(userId, wineId).getNoteId();
         noteRepository.deleteById(noteId);
         return noteId;
-    }
-
-    public Long findWineId (String wineName) {
-        return wineRepository.findByWineName(wineName).get().getId();
     }
 }
