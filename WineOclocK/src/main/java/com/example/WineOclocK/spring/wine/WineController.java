@@ -6,6 +6,7 @@ import com.example.WineOclocK.spring.wine.dto.NoteReqDto;
 import com.example.WineOclocK.spring.wine.dto.SearchReqDto;
 import com.example.WineOclocK.spring.wine.dto.SearchWineDto;
 import lombok.RequiredArgsConstructor;
+import net.bytebuddy.asm.Advice;
 import org.json.simple.JSONObject;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -55,8 +56,9 @@ public class WineController {
         Map<String, Object> requestData;
 
         //2. 유저확인 및 requestData 만들기
-        User user = userService.getUser(userId); //유저 확인
-        requestData = wineService.recommendContent(user);
+        User user = userService.getUser(userId); //user 가져오기
+        userService.updateUserRole(userId); // user rating 보고 level update 확인
+        requestData = wineService.makeRecommendRequest(user);
 
         //3. 호출할 외부 API 를 입력 -> 각 유저 레벨 별로 다른 api 호출
         if (user.getRole() == Role.ROLE_USER_0) {
