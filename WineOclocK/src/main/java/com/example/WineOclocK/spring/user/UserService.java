@@ -5,6 +5,7 @@ import com.example.WineOclocK.spring.user.dto.JoinDto;
 import com.example.WineOclocK.spring.user.dto.LoginDto;
 import com.example.WineOclocK.spring.user.UserRepository;
 import com.example.WineOclocK.spring.wine.repository.NoteRepository;
+import com.example.WineOclocK.spring.wine.repository.RatingRepository;
 import com.example.WineOclocK.spring.wine.repository.SaveRepository;
 import com.example.WineOclocK.spring.wine.repository.WineRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,12 +23,10 @@ import java.util.List;
 public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
-
     private final WineRepository wineRepository;
-
     private final SaveRepository saveRepository;
-
     private final NoteRepository noteRepository;
+    private final RatingRepository ratingRepository;
 
     public User getUser(long id) {
         return userRepository.findById(id)
@@ -96,7 +95,7 @@ public class UserService {
         else if (joinDto.getUserLikeSweet() == 1){ userLikeSweetInt = 1; }
         else { userLikeSweetInt = 3; }
 
-        // 와인바디 : 0 (가벼운 와인 선호), 1 (무거운 와인 선호), 2 (상관없음)
+        // 와인바디 : 0 (가벼운 와인 선호), 1 (무거운 와인 선호), 2(상관없음)
         int userLikeBodyInt;
         if (joinDto.getUserLikeBody() == 0){ userLikeBodyInt = 1;}
         else if (joinDto.getUserLikeBody() == 1) { userLikeBodyInt = 5; }
@@ -131,8 +130,7 @@ public class UserService {
     @Transactional
     public User updateUser(Long userId, JoinDto joinDto) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다.")
-        );
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
         user.update(bCryptPasswordEncoder.encode(joinDto.getPassword()),
                 joinDto.getUsername(), joinDto.getBirthday(),
                 userLikeTypeStrToList(joinDto.getUserLikeType()),
@@ -150,12 +148,28 @@ public class UserService {
         userRepository.deleteById(userId);
     }
 
-    public static String getCurrentMemberId() {
-        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication.getName() == null) {
-            throw new RuntimeException("No authentication information.");
-        }
-        return authentication.getName();
-    }
+    /**
+     * 회원 레벨 업데이트
+     * Lv0 -> rating 30개 미만
+     * Lv1 -> rating 30개 이상 50개 미만
+     * Lv2 -> rating 50개 이상
+     */
+    @Transactional
+    public void updateUserRole(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+        List<Rating> ratings = ratingRepository.findAllyByUserId(userId);
 
+        System.out.println("========" + user.getUsername() + "님의 rating 개수는 " + ratings.size() + "입니다");
+        System.out.println("========" + user.getUsername() + "님의 기존 role 은 " + user.getRole() + "입니다");
+
+        if (ratings.size() >= 50) {
+            user.updateRole(Role.ROLE_USER_2);
+        } else if (ratings.size() >= 30) {
+            user.updateRole(Role.ROLE_USER_1);
+        } else {
+            user.updateRole(Role.ROLE_USER_0);
+        }
+        System.out.println("========" + user.getUsername() + "님의 수정 role 은 " + user.getRole() + "입니다");
+    }
 }

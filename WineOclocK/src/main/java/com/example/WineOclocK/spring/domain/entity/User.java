@@ -66,6 +66,14 @@ public class User {
         this.userLikeAroma3 = userLikeAroma3;
     }
 
+    /**
+     * Role update 기능
+     */
+    public void updateRole(Role role) {
+        this.role = role;
+    }
+
+
     @Override
     public String toString() {
         return
