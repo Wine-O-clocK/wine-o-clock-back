@@ -26,9 +26,9 @@ public class WineService {
     private final SaveRepository saveRepository;
     private final NoteRepository noteRepository;
 
-    public Wine getWine (long id) {
-        return wineRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("not found wine with id =" + id));
+    public Wine getWine (long wineId) {
+        return wineRepository.findById(wineId)
+                .orElseThrow(() -> new IllegalArgumentException("not found wine with id =" + wineId));
     }
 
     public Note getNote (long userId, long wineId) {
@@ -49,28 +49,24 @@ public class WineService {
      * }
      */
     // 콘텐츠기반 추천 알고리즘 데이터 전처리
-    public Map<String, Object> recommendContent(User user) throws IOException {
+    @Transactional
+    public Map<String, Object> makeRecommendRequest(User user) {
+
         Map<String, Object> map = new HashMap<>();
 
         //유저정보를 전처리화
-        map.put("userLikeType", user.getUserLikeType());
+        System.out.println("----------userLikeType = " +  user.getUserLikeType());
         map.put("userLikeType", user.getUserLikeType());
         map.put("userLikeSweet", user.getUserLikeSweet());
         map.put("userLikeBody", user.getUserLikeBody());
+
         map.put("userLikeAroma1", user.getUserLikeAroma1());
         map.put("userLikeAroma2", user.getUserLikeAroma2());
         map.put("userLikeAroma3", user.getUserLikeAroma3());
 
-        return map;
-    }
-
-    @Transactional
-    public Map<String, Object> makeRecommendRequest(Long userId) {
-
-        Map<String, Object> map = new HashMap<>();
         map.put("ratings", ratingRepository.findAll());
-        map.put("highRatingWine", searchHighRating(userId));
-        map.put("userId", userId);
+        map.put("highRatingWine", searchHighRating(user.getUserId()));
+        map.put("userId", user.getUserId());
 
         return map;
     }
