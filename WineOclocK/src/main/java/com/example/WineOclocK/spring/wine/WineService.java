@@ -64,11 +64,18 @@ public class WineService {
         map.put("userLikeAroma2", user.getUserLikeAroma2());
         map.put("userLikeAroma3", user.getUserLikeAroma3());
 
-        map.put("ratings", ratingRepository.findAll());
-        map.put("highRatingWine", searchHighRating(user.getUserId()));
-        map.put("userId", user.getUserId());
-
+        if (user.getRole() != Role.ROLE_USER_0) {
+            map.put("ratings", ratingRepository.findAll());
+            map.put("highRatingWine", searchHighRating(user.getUserId()));
+            map.put("userId", user.getUserId());
+        }
         return map;
+    }
+
+    @Transactional
+    public String searchHighRating(Long userId) {
+        List<Rating> ratingList = ratingRepository.findByUserIdOrderByRatingDesc(userId);
+        return ratingList.get(0).getWineName();
     }
 
     public List<Wine> flaskResponseParsing(User user, String string) {
@@ -247,12 +254,6 @@ public class WineService {
                 throw new IllegalArgumentException("------rating build error");
             }
         }
-    }
-
-    @Transactional
-    public String searchHighRating(Long userId) {
-        List<Rating> ratingList = ratingRepository.findByUserIdOrderByRatingDesc(userId);
-        return ratingList.get(0).getWineName();
     }
 
     /**

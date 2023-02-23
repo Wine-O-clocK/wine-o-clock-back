@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface RatingRepository extends JpaRepository<Rating, Long> {
 
     boolean existsByUserIdAndWineId(Long userId, Long wineId);
-    void deleteByUserIdAndWineId(Long userId, Long wineId);
     Optional<Rating> findByUserIdAndWineId(Long userId, Long wineId);
     List<Rating> findByUserIdOrderByRatingDesc(Long userId);
+    List<Rating> findAllyByUserId(Long userId);
 }
