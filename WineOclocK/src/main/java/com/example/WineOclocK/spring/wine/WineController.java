@@ -23,22 +23,18 @@ public class WineController {
     private final WineService wineService;
     private final UserService userService;
 
+    /**
+     * 와인 검색하기
+     * (1)키워드 검색 및 (2)필터링 검색
+     */
     @GetMapping("/search")
     public List<SearchWineDto> searchKeyword(@RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "keyword", required = false, defaultValue="") String keyword) {
-        System.out.println("--------- searchKeyword");
         List<SearchWineDto> wineList = wineService.searchWines(userId, keyword);
-        System.out.println("--------- wineSearch 성공");
         return wineList;
     }
 
     @PostMapping("/search/filtering")
     public List<SearchWineDto> searchFiltering(@RequestBody SearchReqDto searchReqDto) {
-        System.out.println("--------- searchFiltering");
-        System.out.println("searchReqDto.getType() = " + searchReqDto.getType());
-        System.out.println("searchReqDto.getPrice() = " + searchReqDto.getPrice());
-        System.out.println("searchReqDto.getAroma1() = " + searchReqDto.getAroma1());
-        System.out.println("searchReqDto.getAroma2() = " + searchReqDto.getAroma2());
-        System.out.println("searchReqDto.getAroma3() = " + searchReqDto.getAroma3());
         return wineService.searchByFiltering(searchReqDto);
     }
 
@@ -54,27 +50,23 @@ public class WineController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON); //Json
 
-        System.out.println("-------헤더 세팅 완료");
-
         //1. URL set & 2. Body set
         String url;
         Map<String, Object> requestData;
 
-        //3. 호출할 외부 API 를 입력 -> 각 유저 레벨 별로 다른 api 호출
+        //2. 유저확인 및 requestData 만들기
         User user = userService.getUser(userId); //유저 확인
-        System.out.println("-------user.getRole() = " + user.getRole());
+        requestData = wineService.recommendContent(user);
+
+        //3. 호출할 외부 API 를 입력 -> 각 유저 레벨 별로 다른 api 호출
         if (user.getRole() == Role.ROLE_USER_0) {
             url = "http://127.0.0.1:5000/recommend/content";
-            requestData = wineService.recommendContent(user);
         } else if (user.getRole() == Role.ROLE_USER_1) {
             url = "http://127.0.0.1:5000/recommend/item";
-            requestData = wineService.makeRecommendRequest(userId);
         } else if (user.getRole() == Role.ROLE_USER_2) {
             url = "http://127.0.0.1:5000/recommend/latent";
-            requestData = wineService.makeRecommendRequest(userId);
         } else {
             url = "";
-            requestData = wineService.recommendContent(user);
         }
 
         //4. 받은 데이터를 다시 보낼 수 있게 만들기
@@ -104,8 +96,7 @@ public class WineController {
     @GetMapping("/saveWine/{userId}/{wineId}")
     public String insertSaveWine (@PathVariable Long userId, @PathVariable Long wineId) throws IOException {
         wineService.insertSave(userId, wineId);
-        //와인 저장시 -> rating 점수 3점 추가
-        wineService.insertRating(userId, wineId,3);
+        wineService.insertRating(userId, wineId,3); //와인 저장시 -> rating 점수 3점 추가
         return "와인 저장 완료!";
     }
 
@@ -121,8 +112,8 @@ public class WineController {
      */
     @GetMapping("/detail/{userId}/{wineId}")
     public Map<String,Object> getDetail (@PathVariable Long userId, @PathVariable Long wineId) throws IOException {
-        //* rating 추가 (디테일페이지 접근시 -> 2점)
-        wineService.insertRating(userId, wineId,2);
+
+        wineService.insertRating(userId, wineId,2); //* rating 추가 (디테일페이지 접근시 -> 2점)
 
         HashMap<String, Object> detailMap = new HashMap<>();
         Wine wine = wineService.getWine(wineId);
@@ -137,7 +128,6 @@ public class WineController {
             detailMap.put("tastingNote", null);
             detailMap.put("existNote", false);
         }
-
         return detailMap;
     }
 
