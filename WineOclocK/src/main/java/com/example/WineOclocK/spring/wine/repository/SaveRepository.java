@@ -9,6 +9,7 @@ import java.util.List;
 
 @Repository
 public interface SaveRepository extends JpaRepository<Save, Long> {
+    Save findByUserIdAndWineId(Long userId, Long wineId);
     boolean existsByUserIdAndWineId(Long userId, Long wineId);
     void deleteByUserIdAndWineId(Long userId, Long wineId);
     List<Save> findAllByUserId(Long userId);

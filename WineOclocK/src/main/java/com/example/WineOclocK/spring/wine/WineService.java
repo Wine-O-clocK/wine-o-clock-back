@@ -201,14 +201,13 @@ public class WineService {
      */
     @Transactional
     public void insertSave (Long userId, Long wineId) {
-        try {
+        //중복저장 방지 (없는 경우에만 저장할 수 있도록)
+        if(!existSave(userId, wineId)) {
             Save save = Save.builder()
-                    .userId(userId)
-                    .wineId(wineId)
-                    .build();
+                .userId(userId)
+                .wineId(wineId)
+                .build();
             saveRepository.save(save);
-        } catch (Exception exception) {
-            throw new IllegalArgumentException("------save build error");
         }
     }
 

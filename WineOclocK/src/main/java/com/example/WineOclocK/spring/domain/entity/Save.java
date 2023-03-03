@@ -22,4 +22,12 @@ public class Save {
     private Long saveId;
     private Long userId;
     private Long wineId;
+
+    /**
+     * update 기능
+     */
+    public void update(Long userId, Long wineId) {
+        this.userId = userId;
+        this.wineId = wineId;
+    }
 }
