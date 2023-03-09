@@ -3,13 +3,9 @@ package com.example.WineOclocK.spring.user;
 import com.example.WineOclocK.spring.domain.entity.User;
 import com.example.WineOclocK.spring.domain.entity.Wine;
 import com.example.WineOclocK.spring.user.dto.JoinDto;
-import com.example.WineOclocK.spring.user.dto.LoginDto;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.security.SecurityUtil;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;

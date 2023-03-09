@@ -1,7 +1,7 @@
 package com.example.WineOclocK.spring.batch;
 
 import com.example.WineOclocK.spring.domain.entity.Wine;
-import com.example.WineOclocK.spring.wine.WineRepository;
+import com.example.WineOclocK.spring.wine.repository.WineRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.batch.item.ItemWriter;

@@ -160,9 +160,6 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
         List<Rating> ratings = ratingRepository.findAllyByUserId(userId);
 
-        System.out.println("========" + user.getUsername() + "님의 rating 개수는 " + ratings.size() + "입니다");
-        System.out.println("========" + user.getUsername() + "님의 기존 role 은 " + user.getRole() + "입니다");
-
         if (ratings.size() >= 50) {
             user.updateRole(Role.ROLE_USER_2);
         } else if (ratings.size() >= 30) {
@@ -170,7 +167,6 @@ public class UserService {
         } else {
             user.updateRole(Role.ROLE_USER_0);
         }
-        System.out.println("========" + user.getUsername() + "님의 수정 role 은 " + user.getRole() + "입니다");
     }
 
     @Transactional

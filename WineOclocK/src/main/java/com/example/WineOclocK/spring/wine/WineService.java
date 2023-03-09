@@ -41,12 +41,8 @@ public class WineService {
     }
 
     /**
+     * 추천 알고리즘
      * json 형식으로 fastApi 에게 보냄
-     *
-     * {
-     *   "userId": "1",
-     *   "result": " wine['wineType'] + ' ' + wine['wineSweet'] + '당도 ' + wine['wineBody'] + '바디 ' + wine['aroma1'] + ' ' + wine['aroma2'] + ' ' + wine['aroma3'] "
-     * }
      */
     // 콘텐츠기반 추천 알고리즘 데이터 전처리
     @Transactional
@@ -55,7 +51,6 @@ public class WineService {
         Map<String, Object> map = new HashMap<>();
 
         //유저정보를 전처리화
-        System.out.println("----------userLikeType = " +  user.getUserLikeType());
         map.put("userLikeType", user.getUserLikeType());
         map.put("userLikeSweet", user.getUserLikeSweet());
         map.put("userLikeBody", user.getUserLikeBody());
@@ -75,13 +70,13 @@ public class WineService {
     @Transactional
     public String searchHighRating(Long userId) {
         List<Rating> ratingList = ratingRepository.findByUserIdOrderByRatingDesc(userId);
-        return ratingList.get(0).getWineName();
+        // 0~3 사이 난수만들기
+        Random random = new Random();
+        int num = random.nextInt(3);
+        return ratingList.get(num).getWineName();
     }
 
     public List<Wine> flaskResponseParsing(User user, String string) {
-
-        System.out.println("WineService.flaskResponseParsing > string = " + string);
-
         string = string.substring(1, string.length()-2); // 앞 뒤 '[', ']' 제거
         string = string.replaceAll("\'", "");
         String[] strSplit = string.split(","); // , 를 기준으로 나눔
@@ -106,21 +101,17 @@ public class WineService {
 
     @Transactional
     public List<SearchWineDto> searchWines (Long userId, String keyword){
-        System.out.println("---------userId = " + userId + "가 들어왔습니다");
-        System.out.println("--------- wineSearch 시작 : " + keyword + "와인을 검색합니다");
-
         List<Wine> wines = wineRepository.findByWineNameContaining(keyword);
         List<SearchWineDto> wineDtoList = new ArrayList<>();
 
         if(wines.isEmpty()) {
-            System.out.println("와인이 없습니다");
             return wineDtoList;
         }
-
         for(Wine wine : wines) {
             //검색 시 나온 결과 와인들 -> rating 1점 추가
-            //insertRating(userId, wine.getId(), 1);
             wineDtoList.add(this.convertEntityToDto(wine));
+            //insertRating(userId, wine.getId(), 1);
+
         }
         return wineDtoList;
     }
@@ -159,7 +150,6 @@ public class WineService {
         List<SearchWineDto> wineDtoList = new ArrayList<>();
 
         if(wines.isEmpty()) {
-            System.out.println("와인이 없습니다");
             return wineDtoList;
         }
 
@@ -241,17 +231,13 @@ public class WineService {
             }
 
         } else { //디비에 존재 X -> 새로 디비에 저장
-            try {
-                Rating rating = Rating.builder()
-                        .userId(userId)
-                        .wineId(wineId)
-                        .wineName(getWine(wineId).getWineName())
-                        .rating(num)
-                        .build();
-                ratingRepository.save(rating);
-            } catch (Exception exception) {
-                throw new IllegalArgumentException("------rating build error");
-            }
+            Rating rating = Rating.builder()
+                    .userId(userId)
+                    .wineId(wineId)
+                    .wineName(getWine(wineId).getWineName())
+                    .rating(num)
+                    .build();
+            ratingRepository.save(rating);
         }
     }
 

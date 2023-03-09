@@ -1,10 +1,7 @@
 package com.example.WineOclocK.spring.domain.entity;
 
-import com.example.WineOclocK.spring.domain.entity.Role;
 import lombok.*;
-
 import javax.persistence.*;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -72,7 +69,6 @@ public class User {
     public void updateRole(Role role) {
         this.role = role;
     }
-
 
     @Override
     public String toString() {

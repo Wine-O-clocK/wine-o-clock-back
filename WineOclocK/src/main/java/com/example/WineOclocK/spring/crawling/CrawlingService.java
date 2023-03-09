@@ -59,7 +59,6 @@ public class CrawlingService {
         JSONArray presentArr = (JSONArray) json.get("present");
         JSONArray priceArr = (JSONArray) json.get("price");
 
-        logger.info("★★★★★★★★★★★★★★★ MENTION ★★★★★★★★★★★★★★★");
         for (Object object : mentionArr) {
             json = (JSONObject) object;
             Mention mention = Mention.builder()
@@ -77,9 +76,7 @@ public class CrawlingService {
                     .build();
             mentionRepository.save(mention);
         }
-        logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 
-        logger.info("★★★★★★★★★★★★★★★ ACCESS ★★★★★★★★★★★★★★★");
         for (Object object : accessArr) {
             json = (JSONObject) object;
             Access access = Access.builder()
@@ -97,9 +94,7 @@ public class CrawlingService {
                     .build();
             accessRepository.save(access);
         }
-        logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 
-        logger.info("★★★★★★★★★★★★★★★ PRESENT ★★★★★★★★★★★★★★★");
         for (Object object : presentArr) {
             json = (JSONObject) object;
             Present present = Present.builder()
@@ -117,9 +112,7 @@ public class CrawlingService {
                     .build();
             presentRepository.save(present);
         }
-        logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 
-        logger.info("★★★★★★★★★★★★★★★★ Price ★★★★★★★★★★★★★★★★");
         for (Object object : priceArr) {
             json = (JSONObject) object;
             Price price = Price.builder()
@@ -137,14 +130,12 @@ public class CrawlingService {
                     .build();
             priceRepository.save(price);
         }
-        logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 
         // 최신 로컬 제이슨 파일 읽기
         resource = new ClassPathResource("recent_data.json");
         JSONArray recentArr = (JSONArray) new JSONParser().parse(new InputStreamReader(resource.getInputStream(), "UTF-8"));
 
         // jsonArr 에서 하나씩 JSONObject 로 cast 해서 사용
-        logger.info("★★★★★★★★★★★★★★★ RECENT ★★★★★★★★★★★★★★★");
         if (recentArr.size() > 0){
             for(int i=0; i<recentArr.size(); i++){
                 json = (JSONObject)recentArr.get(i);
@@ -165,10 +156,6 @@ public class CrawlingService {
                 recentRepository.save(recent);
             }
         }
-        logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
-        logger.info("data.json -> db 저장 성공!");
-
-        //String SUCCESS_MENTION = "data.json -> db 저장 성공!";
     }
 
     public Long findWineId (String wineName) {
