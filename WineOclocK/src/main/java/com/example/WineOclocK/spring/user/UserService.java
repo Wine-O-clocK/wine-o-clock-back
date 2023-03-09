@@ -172,4 +172,20 @@ public class UserService {
         }
         System.out.println("========" + user.getUsername() + "님의 수정 role 은 " + user.getRole() + "입니다");
     }
+
+    @Transactional
+    public String upRole(Long userId, int userLv) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+
+        if(userLv == 0) {
+            user.updateRole(Role.ROLE_USER_0);
+        } else if (userLv ==1) {
+            user.updateRole(Role.ROLE_USER_1);
+        } else {
+            user.updateRole(Role.ROLE_USER_2);
+        }
+
+        return user.getRole().toString();
+    }
 }

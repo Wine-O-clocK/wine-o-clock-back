@@ -68,4 +68,9 @@ public class UserController {
         userService.deleteUser(userId);
         return "회원탈퇴완료";
     }
+
+    @GetMapping("test/upRole/{userId}/{userLv}")
+    public String upRole(@PathVariable Long userId, @PathVariable int userLv) throws IOException{
+        return userService.upRole(userId, userLv);
+    }
 }
