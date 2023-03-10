@@ -45,14 +45,9 @@ public class CrawlingService {
     // json 파싱하기
     @Transactional
     public void parsingJson() throws ParseException, IOException {
-
-        logger.info("★★★★★★★★★★★★★★ [parsingJson] ★★★★★★★★★★★★★★★★★★★★★");
-
         // 로컬 제이슨 파일 읽기
         ClassPathResource resource = new ClassPathResource("data.json");
         JSONObject json = (JSONObject) new JSONParser().parse(new InputStreamReader(resource.getInputStream(), "UTF-8")); //json-simple
-
-        logger.info("data.json :: {}", json);
 
         JSONArray mentionArr = (JSONArray) json.get("mention");
         JSONArray accessArr = (JSONArray) json.get("access");
