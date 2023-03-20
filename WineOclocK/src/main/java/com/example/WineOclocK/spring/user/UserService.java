@@ -1,16 +1,18 @@
 package com.example.WineOclocK.spring.user;
 
-import com.example.WineOclocK.spring.domain.entity.*;
 import com.example.WineOclocK.spring.user.dto.JoinDto;
 import com.example.WineOclocK.spring.user.dto.LoginDto;
-import com.example.WineOclocK.spring.user.UserRepository;
+import com.example.WineOclocK.spring.user.entity.Role;
+import com.example.WineOclocK.spring.user.entity.User;
+import com.example.WineOclocK.spring.wine.entity.Note;
+import com.example.WineOclocK.spring.wine.entity.Rating;
+import com.example.WineOclocK.spring.wine.entity.Save;
+import com.example.WineOclocK.spring.wine.entity.Wine;
 import com.example.WineOclocK.spring.wine.repository.NoteRepository;
 import com.example.WineOclocK.spring.wine.repository.RatingRepository;
 import com.example.WineOclocK.spring.wine.repository.SaveRepository;
 import com.example.WineOclocK.spring.wine.repository.WineRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

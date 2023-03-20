@@ -1,6 +1,9 @@
-package com.example.WineOclocK.spring.domain.entity;
+package com.example.WineOclocK.spring.wine.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,24 +15,19 @@ import javax.persistence.Id;
 @Getter
 @Entity
 @Builder
-public class Note {
+public class Save {
 
-    /**
-     * 테이스팅 노트
-     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long noteId;
+    private Long saveId;
     private Long userId;
     private Long wineId;
-    private int grade;
-    private String review;
 
     /**
      * update 기능
      */
-    public void update(int grade, String review) {
-        this.grade = grade;
-        this.review = review;
+    public void update(Long userId, Long wineId) {
+        this.userId = userId;
+        this.wineId = wineId;
     }
 }

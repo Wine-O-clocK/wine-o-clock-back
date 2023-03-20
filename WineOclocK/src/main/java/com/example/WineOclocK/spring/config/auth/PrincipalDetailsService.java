@@ -1,6 +1,6 @@
 package com.example.WineOclocK.spring.config.auth;
 
-import com.example.WineOclocK.spring.domain.entity.User;
+import com.example.WineOclocK.spring.user.entity.User;
 import com.example.WineOclocK.spring.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;

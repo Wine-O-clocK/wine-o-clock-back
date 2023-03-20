@@ -1,6 +1,6 @@
 package com.example.WineOclocK.spring.batch;
 
-import com.example.WineOclocK.spring.domain.entity.Wine;
+import com.example.WineOclocK.spring.wine.entity.Wine;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;

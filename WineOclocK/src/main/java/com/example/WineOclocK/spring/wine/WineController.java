@@ -1,10 +1,13 @@
 package com.example.WineOclocK.spring.wine;
 
-import com.example.WineOclocK.spring.domain.entity.*;
 import com.example.WineOclocK.spring.user.UserService;
+import com.example.WineOclocK.spring.user.entity.Role;
+import com.example.WineOclocK.spring.user.entity.User;
 import com.example.WineOclocK.spring.wine.dto.NoteReqDto;
 import com.example.WineOclocK.spring.wine.dto.SearchReqDto;
 import com.example.WineOclocK.spring.wine.dto.SearchWineDto;
+import com.example.WineOclocK.spring.wine.entity.Note;
+import com.example.WineOclocK.spring.wine.entity.Wine;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.springframework.http.*;

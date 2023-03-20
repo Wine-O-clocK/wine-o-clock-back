@@ -1,10 +1,7 @@
 package com.example.WineOclocK.spring.wine;
 
-import com.example.WineOclocK.spring.domain.entity.Wine;
+import com.example.WineOclocK.spring.wine.entity.Wine;
 import org.springframework.data.jpa.domain.Specification;
-
-import java.util.ArrayList;
-import java.util.Map;
 
 public class WineSpecification {
 

@@ -1,20 +1,23 @@
 package com.example.WineOclocK.spring.wine;
 
-import com.example.WineOclocK.spring.domain.entity.*;
+import com.example.WineOclocK.spring.user.entity.Role;
+import com.example.WineOclocK.spring.user.entity.User;
 import com.example.WineOclocK.spring.wine.dto.NoteReqDto;
 import com.example.WineOclocK.spring.wine.dto.SearchReqDto;
 import com.example.WineOclocK.spring.wine.dto.SearchWineDto;
+import com.example.WineOclocK.spring.wine.entity.Note;
+import com.example.WineOclocK.spring.wine.entity.Rating;
+import com.example.WineOclocK.spring.wine.entity.Save;
+import com.example.WineOclocK.spring.wine.entity.Wine;
 import com.example.WineOclocK.spring.wine.repository.NoteRepository;
 import com.example.WineOclocK.spring.wine.repository.RatingRepository;
 import com.example.WineOclocK.spring.wine.repository.SaveRepository;
 import com.example.WineOclocK.spring.wine.repository.WineRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -99,6 +102,9 @@ public class WineService {
         return wineResult;
     }
 
+    /**
+     * 키워드 검색 기능
+     */
     @Transactional
     public List<SearchWineDto> searchWines (Long userId, String keyword){
         List<Wine> wines = wineRepository.findByWineNameContaining(keyword);
@@ -108,10 +114,8 @@ public class WineService {
             return wineDtoList;
         }
         for(Wine wine : wines) {
-            //검색 시 나온 결과 와인들 -> rating 1점 추가
             wineDtoList.add(this.convertEntityToDto(wine));
-            //insertRating(userId, wine.getId(), 1);
-
+            insertRating(userId, wine.getId(), 3);
         }
         return wineDtoList;
     }
@@ -152,12 +156,7 @@ public class WineService {
         if(wines.isEmpty()) {
             return wineDtoList;
         }
-
         for(Wine wine : wines) {
-            if(searchReqDto.getUserId() != null){
-                //검색 시 나온 결과 와인들 -> rating 1점 추가
-                insertRating(searchReqDto.getUserId(), wine.getId(), 3);
-            }
             wineDtoList.add(this.convertEntityToDto(wine));
         }
         return wineDtoList;

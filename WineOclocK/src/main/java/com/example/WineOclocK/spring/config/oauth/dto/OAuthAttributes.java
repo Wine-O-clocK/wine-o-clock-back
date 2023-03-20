@@ -1,6 +1,6 @@
 package com.example.WineOclocK.spring.config.oauth.dto;
 
-import com.example.WineOclocK.spring.domain.entity.Role;
+import com.example.WineOclocK.spring.user.entity.Role;
 import com.example.WineOclocK.spring.user.social.SocialUser;
 import lombok.Builder;
 import lombok.Getter;

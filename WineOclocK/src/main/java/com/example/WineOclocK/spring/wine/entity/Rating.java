@@ -1,4 +1,4 @@
-package com.example.WineOclocK.spring.domain.entity;
+package com.example.WineOclocK.spring.wine.entity;
 
 import lombok.*;
 

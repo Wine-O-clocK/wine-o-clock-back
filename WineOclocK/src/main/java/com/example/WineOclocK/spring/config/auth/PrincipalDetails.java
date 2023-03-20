@@ -1,6 +1,6 @@
 package com.example.WineOclocK.spring.config.auth;
 
-import com.example.WineOclocK.spring.domain.entity.User;
+import com.example.WineOclocK.spring.user.entity.User;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

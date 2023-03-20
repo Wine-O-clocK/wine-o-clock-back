@@ -1,6 +1,6 @@
 package com.example.WineOclocK.spring.user;
 
-import com.example.WineOclocK.spring.domain.entity.User;
+import com.example.WineOclocK.spring.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

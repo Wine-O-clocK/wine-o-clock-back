@@ -1,6 +1,6 @@
 package com.example.WineOclocK.domain.repository;
 
-import com.example.WineOclocK.spring.domain.entity.User;
+import com.example.WineOclocK.spring.user.entity.User;
 import com.example.WineOclocK.spring.user.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;

@@ -1,7 +1,7 @@
 package com.example.WineOclocK.spring.user;
 
-import com.example.WineOclocK.spring.domain.entity.User;
-import com.example.WineOclocK.spring.domain.entity.Wine;
+import com.example.WineOclocK.spring.user.entity.User;
+import com.example.WineOclocK.spring.wine.entity.Wine;
 import com.example.WineOclocK.spring.user.dto.JoinDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
