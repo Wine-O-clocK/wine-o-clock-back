@@ -26,7 +26,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private CorsConfig corsConfig;
     @Autowired
     private final UserRepository userRepository;
-    //private final PrincipalDetailsService principalDetailsService;
 
     // Service 에서 비밀번호를 암호화할 수 있도록 Bean 으로 등록
     @Bean

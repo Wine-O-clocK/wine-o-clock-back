@@ -223,7 +223,6 @@ public class WineService {
 
         //이미 데이터베이스에 있는지 확인
         if (ratingRepository.existsByUserIdAndWineId(userId, wineId)) {
-            System.out.println("--------해당 rating 값이 데이터베이스에 있네요!");
             Rating rating = getRating(userId, wineId);
             //기존 값 vs num 값 비교 후 num 값이 높으면 새로 업데이트
             if (num > rating.getRating()) {
@@ -231,7 +230,6 @@ public class WineService {
             }
 
         } else { //디비에 존재 X -> 새로 디비에 저장
-            System.out.println("--------해당 rating 값이 데이터베이스에 없네요!");
             Rating rating = Rating.builder()
                     .userId(userId)
                     .wineId(wineId)

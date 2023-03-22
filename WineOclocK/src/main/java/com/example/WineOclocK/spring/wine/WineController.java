@@ -47,9 +47,6 @@ public class WineController {
     @GetMapping("/recommend/{userId}")
     public ResponseEntity<Map<String,Object>> requestToFlask (@PathVariable Long userId) throws IOException {
 
-        System.out.println("---------------WineController.requestToFlask");
-        System.out.println("---------------userId = " + userId);
-
         //0. Header set
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON); //Json
@@ -95,7 +92,6 @@ public class WineController {
         for(int i=0; i<wineList.size(); i++){
             wineService.insertRating(userId, wineList.get(i).getId(),3);
         }
-        System.out.println("================결과로 받은 와인 점수를 줬어요!");
         resultMap.put("body", wineList); // 반환받은 실제 데이터 정보
 
         return new ResponseEntity<>(resultMap, HttpStatus.OK);

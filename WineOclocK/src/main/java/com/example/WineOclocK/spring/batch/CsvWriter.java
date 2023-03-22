@@ -20,20 +20,5 @@ public class CsvWriter implements ItemWriter<Wine> {
     public void write(List<? extends Wine> list) throws Exception {
         System.out.println("CsvWriter.write");
         wineRepository.saveAll(new ArrayList<Wine>(list));
-//        List<Wine> tempWineList = new ArrayList<>();
-//
-//        list.forEach(getWine -> {
-//            Wine tempWine = new Wine();
-//            tempWine.setWineName(getWine.getWineName());
-//            tempWine.setWineNameEng(getWine.getWineNameEng());
-//            tempWine.setWineImage(getWine.getWineImage());
-//            tempWine.setWineType(getWine.getWineName());
-//            tempWine.setWineName(getWine.getWineName());
-//            tempWine.setWineName(getWine.getWineName());;
-//
-//            tempWineList.add(tempWine);
-//        });
-//
-//        wineRepository.saveAll(tempWineList);
     }
 }

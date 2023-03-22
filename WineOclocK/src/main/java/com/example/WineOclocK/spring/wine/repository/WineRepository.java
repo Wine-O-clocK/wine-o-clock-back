@@ -14,6 +14,5 @@ public interface WineRepository extends JpaRepository<Wine, Long>, JpaSpecificat
 
     Optional<Wine> findByWineName(String wineName);
 
-    //@Query(value = "SELECT w FROM Wine w WHERE w.name LIKE %?1%")
     List<Wine> findByWineNameContaining(@Param("name") String name);
 }
