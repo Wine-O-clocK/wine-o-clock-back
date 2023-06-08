@@ -115,7 +115,7 @@ public class WineService {
         }
         for(Wine wine : wines) {
             wineDtoList.add(this.convertEntityToDto(wine));
-            insertRating(userId, wine.getId(), 3);
+            if(userId != null) insertRating(userId, wine.getId(), 3); //이게 문제군
         }
         return wineDtoList;
     }
