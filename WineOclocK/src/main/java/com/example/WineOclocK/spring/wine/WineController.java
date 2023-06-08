@@ -1,5 +1,6 @@
 package com.example.WineOclocK.spring.wine;
 
+import com.example.WineOclocK.spring.response.BaseResponse;
 import com.example.WineOclocK.spring.user.UserService;
 import com.example.WineOclocK.spring.user.entity.Role;
 import com.example.WineOclocK.spring.user.entity.User;
@@ -31,21 +32,22 @@ public class WineController {
      * (1)키워드 검색 및 (2)필터링 검색
      */
     @GetMapping("/search")
-    public List<SearchWineDto> searchKeyword(@RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "keyword", required = false, defaultValue="") String keyword) {
+    public BaseResponse<List<SearchWineDto>> searchKeyword(@RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "keyword", required = false, defaultValue="") String keyword) {
         List<SearchWineDto> wineList = wineService.searchWines(userId, keyword);
-        return wineList;
+        return BaseResponse.success(wineList);
     }
 
     @PostMapping("/search/filtering")
-    public List<SearchWineDto> searchFiltering(@RequestBody SearchReqDto searchReqDto) {
-        return wineService.searchByFiltering(searchReqDto);
+    public BaseResponse<List<SearchWineDto>> searchFiltering(@RequestBody SearchReqDto searchReqDto) {
+        List<SearchWineDto> searchWineDto = wineService.searchByFiltering(searchReqDto);
+        return BaseResponse.success(searchWineDto);
     }
 
     /**
      * 와인 추천하기
      */
     @GetMapping("/recommend/{userId}")
-    public ResponseEntity<Map<String,Object>> requestToFlask (@PathVariable Long userId) throws IOException {
+    public BaseResponse<Map<String,Object>> requestToFlask (@PathVariable Long userId) throws IOException {
 
         //0. Header set
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -94,23 +96,23 @@ public class WineController {
         }
         resultMap.put("body", wineList); // 반환받은 실제 데이터 정보
 
-        return new ResponseEntity<>(resultMap, HttpStatus.OK);
+        return BaseResponse.success(resultMap);
     }
 
     /**
      * 와인 저장하기
      */
     @GetMapping("/saveWine/{userId}/{wineId}")
-    public String insertSaveWine (@PathVariable Long userId, @PathVariable Long wineId) throws IOException {
+    public BaseResponse<String> insertSaveWine (@PathVariable Long userId, @PathVariable Long wineId) throws IOException {
         wineService.insertSave(userId, wineId);
         wineService.insertRating(userId, wineId,4); //와인 저장시 -> rating 점수 3점 추가
-        return "와인 저장 완료!";
+        return BaseResponse.success("와인 저장 완료!");
     }
 
     @DeleteMapping("/saveWine/{userId}/{wineId}")
-    public String deleteSaveWine (@PathVariable Long userId, @PathVariable Long wineId) throws IOException {
+    public BaseResponse<String> deleteSaveWine (@PathVariable Long userId, @PathVariable Long wineId) throws IOException {
         wineService.deleteSave(userId, wineId);
-        return "와인 저장 취소 완료!";
+        return BaseResponse.success("와인 저장 취소 완료!");
     }
 
     /**
@@ -118,7 +120,7 @@ public class WineController {
      * 와인정보 + 저장정보 + 테이스팅 노트 정보
      */
     @GetMapping("/detail/{userId}/{wineId}")
-    public Map<String,Object> getDetail (@PathVariable Long userId, @PathVariable Long wineId) throws IOException {
+    public BaseResponse<Map<String,Object>> getDetail (@PathVariable Long userId, @PathVariable Long wineId) throws IOException {
 
         wineService.insertRating(userId, wineId,2); //* rating 추가 (디테일페이지 접근시 -> 2점)
 
@@ -135,26 +137,29 @@ public class WineController {
             detailMap.put("tastingNote", null);
             detailMap.put("existNote", false);
         }
-        return detailMap;
+        return BaseResponse.success(detailMap);
     }
 
     @PostMapping("/detail/{userId}/{wineId}")
-    public Note insertNote (@PathVariable Long userId, @PathVariable Long wineId, @RequestBody NoteReqDto noteReqDto) throws IOException {
+    public BaseResponse<Note> insertNote (@PathVariable Long userId, @PathVariable Long wineId, @RequestBody NoteReqDto noteReqDto) throws IOException {
         //* rating 추가 (테이스팅 노트 -> user 가 입력한 grade)
         wineService.insertRating(userId, wineId, noteReqDto.getGrade());
-        return wineService.insertNote(userId, wineId,noteReqDto);
+        Note note = wineService.insertNote(userId, wineId, noteReqDto);
+        return BaseResponse.success(note);
     }
 
     @PutMapping("/detail/{userId}/{wineId}")
-    public Note updateNote (@PathVariable Long userId, @PathVariable Long wineId, @RequestBody NoteReqDto noteReqDto) throws IOException {
+    public BaseResponse<Note> updateNote (@PathVariable Long userId, @PathVariable Long wineId, @RequestBody NoteReqDto noteReqDto) throws IOException {
         //테이스팅 노트 접근 -> grade 추가
         wineService.insertRating(userId, wineId, noteReqDto.getGrade());
-        return wineService.updateNote(userId, wineId, noteReqDto);
+        Note note = wineService.updateNote(userId, wineId, noteReqDto);
+        return BaseResponse.success(note);
     }
 
     @DeleteMapping("/detail/{userId}/{wineId}")
-    public Long DeleteNote (@PathVariable Long userId, @PathVariable Long wineId) throws IOException {
-        return wineService.deleteNote(userId, wineId);
+    public BaseResponse<Long> DeleteNote (@PathVariable Long userId, @PathVariable Long wineId) throws IOException {
+        Long noteId = wineService.deleteNote(userId, wineId);
+        return BaseResponse.success(noteId);
     }
 
     @GetMapping("/test/rating/{userId}")
