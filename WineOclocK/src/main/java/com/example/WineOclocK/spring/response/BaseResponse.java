@@ -1,14 +1,14 @@
 package com.example.WineOclocK.spring.response;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class BaseResponse<T> {
-    private Boolean isSuccess;
-    private T data;
-    private String message;
+    private final Boolean isSuccess;
+    private final T data;
+    private final String message;
 
     private BaseResponse(boolean success, T data, String message){
         this.isSuccess = success;
